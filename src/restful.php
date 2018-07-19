@@ -5,14 +5,14 @@ class RESTfulEndpoint {
     // Get items
     function _get() {
         if (method_exists($this, 'get')) {
-            $this.get($_GET);
+            return $this->get($_GET);
         }
     }
 
     // New items
     function _post() {
         if (method_exists($this, 'post')) {
-            $this.post($_POST);
+            return $this->post($_POST);
         }
     }
 
@@ -20,7 +20,7 @@ class RESTfulEndpoint {
     function _put() {
         if (method_exists($this, 'put')) {
             $params = parse_str(file_get_contents("php://input"),$post_vars);
-            $this.put($params);
+            return $this->put($params);
         }
     }
 
@@ -28,7 +28,7 @@ class RESTfulEndpoint {
     function _patch() {
         if (method_exists($this, 'patch')) {
             $params = parse_str(file_get_contents("php://input"),$post_vars);
-            $this.patch($params);
+            return $this->patch($params);
         }
     }
 
@@ -36,35 +36,41 @@ class RESTfulEndpoint {
     function _delete() {
         if (method_exists($this, 'delete')) {
             $params = parse_str(file_get_contents("php://input"),$post_vars);
-            $this.delete($params);
+            return $this->delete($params);
         }
     }
 
     function handleRequest() {
-        $method = $_SERVER['REQUEST_METHOD']
+        $method = $_SERVER['REQUEST_METHOD'];
 
         switch($method) {
 
             case 'GET':
-                $this._get();
+                $response = $this->_get();
                 break;
 
             case 'POST':
-                $this._post();
+                $response = $this->_post();
                 break;
 
             case 'PUT':
-                $this._put();
+                $response = $this->_put();
                 break;
 
             case 'PATCH':
-                $this._patch();
+                $response = $this->_patch();
                 break;
 
             case 'DELETE':
-                $this._delete();
+                $response = $this->_delete();
                 break;
         }
+
+        if (empty($response)) {
+            $response = [];
+        }
+
+        echo json_encode($response);
     }
 }
 
