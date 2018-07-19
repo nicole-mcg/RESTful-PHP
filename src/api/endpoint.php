@@ -5,6 +5,7 @@
     class Endpoint extends RESTfulEndpoint {
 
         function get($params) {
+            $this->db->verify_table('test');
             $response = [];
 
             $response['test'] = 'works';

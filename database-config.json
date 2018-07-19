@@ -1,0 +1,18 @@
+{
+    "connector": "mysqli",
+    "db_name": "RESTful_PHP",
+    "db_user": "root",
+    "db_pass": "root",
+
+    "tables": {
+
+        "comments": {
+            "primary_key": "id",
+
+            "id": "INT NOT NULL AUTO_INCREMENT",
+            "name": "TEXT NOT NULL",
+            "content": "TEXT NOT NULL",
+        }
+
+    }
+}

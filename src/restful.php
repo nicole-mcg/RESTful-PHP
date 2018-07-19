@@ -1,6 +1,11 @@
 <?php
 
+
 class RESTfulEndpoint {
+
+    function __construct() {
+        $this->db = include('database.php');
+    }
     
     // Get items
     function _get() {
