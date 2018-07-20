@@ -16,7 +16,7 @@
         }
 
         function disconnect() {
-            
+
         }
 
     }
@@ -68,10 +68,53 @@
 
             $query .= ');';
 
-            if (!$result = $this->connector->query($query)) {
+            $result = $this->connector->query($query);
+            if (!$result) {
                 echo $query;
                 $this->disconnect(true, 'Could not verify table.');
             }
+        }
+
+        function insert($table, $values) {
+            $query = "INSERT INTO {$table} (";
+
+
+            $first = true;
+            foreach ($values as $key => $value) {
+                if (!$first) {
+                    $query .= ',';
+                }
+                $query .= "{$key}";
+                $first = false;
+            }
+
+            $query .= ") VALUES (";
+
+            $first = true;
+            foreach ($values as $key => $value) {
+                if (!$first) {
+                    $query .= ',';
+                }
+                $query .= "'" . $value . "'";
+                $first = false;
+            }
+            
+            $query .= ")";
+
+            $result = $this->connector->query($query); 
+
+            if (!$result) {
+                $this->error = true;
+                $this->message = 'Could not insert into table ' . $table;
+
+                if (DEBUG) {
+                    echo $query, $this->connector->connection->error . '<br/>';
+                }
+
+                return false;
+            }
+
+            return true;
         }
 
         function disconnect($is_error=false, $message = '') {
@@ -102,12 +145,13 @@
     $db_user = $database_config->db_user;
     $db_pass = $database_config->db_pass;
 
-    $result = $connector->connect('127.0.0.1', $db_user, $db_pass);
+    $result = $connector->connect('127.0.0.1', $db_name, $db_user, $db_pass);
 
     $connection = new DatabaseConnection($connector);
 
     if ($result !== TRUE) {
         $connection->disconnect(true, $result);
+        echo $result;
     }
 
     return $connection;
