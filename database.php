@@ -161,13 +161,11 @@
 
     if ($result !== TRUE) {
         //TODO error
-        $connection->disconnect(true, $result);
         echo $result;
     }
 
     if (!$connection->verify_table('restful_accounts')) {
         //TODO error
-        $connection->disconnect(true, $result);
         echo 'could not verify accounts table', $connection->message, $DEBUG;
 
         if ($DEBUG) {
