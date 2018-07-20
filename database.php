@@ -166,7 +166,7 @@
 
     if (!$connection->verify_table('restful_accounts')) {
         //TODO error
-        echo 'could not verify accounts table', $connection->message, $DEBUG;
+        echo 'could not verify accounts table', $connection->message, var_dump($connection);
 
         if ($DEBUG) {
 
