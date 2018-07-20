@@ -156,7 +156,7 @@
                     $first = false;
                 }
             } else {
-                $query .= '* '
+                $query .= '* ';
             }
 
             $query .= "FROM " . $table . " ";
