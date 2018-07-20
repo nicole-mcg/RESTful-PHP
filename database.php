@@ -62,8 +62,8 @@
                 $index++;
             }
 
-            if (array_key_exists('primary_key', $table_config)) {
-                $query .= ', PRIMARY KEY (`' . $table_config['primary_key'] . '`)';
+            if (property_exists($table_config, 'primary_key')) {
+                $query .= ', PRIMARY KEY (`' . $table_config->primary_key . '`)';
             }
 
             $query .= ');';
@@ -103,7 +103,8 @@
             
             $query .= ")";
 
-            $result = $this->connector->query($query); 
+            $result = $this->connector->query($query);
+            echo var_dump($result);
 
             if (!$result) {
                 $this->error = true;
