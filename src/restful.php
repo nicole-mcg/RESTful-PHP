@@ -1,5 +1,6 @@
 <?php
 
+define("DEBUG", true);
 
 class RESTfulEndpoint {
 

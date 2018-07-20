@@ -12,6 +12,7 @@
             "id": "INT NOT NULL AUTO_INCREMENT",
             "name": "TEXT NOT NULL",
             "content": "TEXT NOT NULL",
+            "test": "INT NOT NULL"
         }
 
     }
