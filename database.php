@@ -137,7 +137,7 @@
     $json_string = file_get_contents(__DIR__ . '/../../../database-config.json');
     $database_config = json_decode($json_string);
 
-    $database_config->tables->restful_accounts = [
+    $database_config->tables->restful_accounts = (object) [
         'primary_key' => 'id',
         'id' => 'INT NOT NULL AUTO_INCREMENT',
         'username' => 'CHAR(12)',
