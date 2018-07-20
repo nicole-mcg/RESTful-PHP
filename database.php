@@ -7,7 +7,7 @@
     class DatabaseConnector {
 
         // Should set $connection property
-        function connect($address, $username, $password) {
+        function connect($address, $db_name, $username, $password) {
 
         }
 
