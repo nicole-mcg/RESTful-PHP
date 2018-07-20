@@ -44,6 +44,8 @@ In order to make this easy to set up, it uses HTTP protocol for data (GET, POST)
 Access database from within endpoints via `$this->db`. Methods in `DatabaseConnection`:
 
 `verify_table(string $tableName)` - This will create the table with the specified name based on `database-config.json`, if it doesn't already exist. Use this for any tables used, at the start of your endpoint handlers.
+
 `insert(string $tableName, array $values)` - Inserts the array into the specified table. The array's keys should match the column names of the table being inserted into
+
 `disconnect($isError=false, $message='')` - Closes the server connection.
 `
