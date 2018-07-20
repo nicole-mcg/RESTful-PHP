@@ -136,6 +136,48 @@
             return $this->connector->num_rows();
         }
 
+        function select($table, $columns=null, $where=null, $group_by=null, $order_by=null, $limit=null, $desc=true) {
+            $query = "SELECT ";
+
+            if ($columns) {
+                $first = true;
+                foreach ($columns as $key => $value) {
+                    if (!$first) {
+                        $query .= ",";
+                    }
+                    $query .= $value;
+                    $first = false;
+                }
+            } else {
+                $query .= '* '
+            }
+
+            $query .= "FROM " . $table . " ";
+
+            if ($where) {
+                $query .= "WHERE " . $where . " ";
+            }
+
+            if ($group_by) {
+                $query .= "GROUP BY" . $group_by . " ";
+            }
+
+            $query .= "ORDER BY "
+            if ($order_by) {
+                $query .= $order_by . " ";
+            }
+
+            $query .= $desc ? "DESC " : "ASC ";
+
+            if ($limit) {
+                $query .= "LIMIT " . $limit;
+            }
+
+            $result = $this->connector->query($query);
+            
+            return $result;
+        }
+
         function disconnect($is_error=false, $message = '') {
             $this->error = $is_error;
 
