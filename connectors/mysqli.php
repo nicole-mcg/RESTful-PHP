@@ -5,21 +5,11 @@
     class MySQLiConnector {
 
         function connect($address, $db_name, $username, $password) {
-            $mysqli = new mysqli($address, $username, $password);
+            $mysqli = new mysqli($address, $username, $password, $db_name);
             $message = true;
 
             if ($mysqli->connect_errno) {
                 $message = 'Could not connect to database server.';
-            }
-
-            $query = 'CREATE DATABASE IF NOT EXISTS ' . $db_name;
-            $result = $mysqli->query($query);
-            if (!$result) {
-                $message = 'Could not verify database.';
-            }
-
-            if (!$mysqli->select_db($db_name)) {
-                $message = 'Could not select database.';
             }
 
             $this->connection = $mysqli;
