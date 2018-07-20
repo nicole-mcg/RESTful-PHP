@@ -1,0 +1,62 @@
+[20-Jul-2018 17:07:35 UTC] PHP Warning:  Failed loading Zend extension '/usr/php/54/usr/lib64/php/modules/ioncube_loader_lin.so' (tried: ext\/usr/php/54/usr/lib64/php/modules/ioncube_loader_lin.so (The specified module could not be found.), ext\php_/usr/php/54/usr/lib64/php/modules/ioncube_loader_lin.so.dll (The specified module could not be found.)) in Unknown on line 0
+[20-Jul-2018 17:07:36 UTC] PHP Warning:  Failed loading Zend extension '/usr/php/54/usr/lib64/php/modules/ixed.lin' (tried: ext\/usr/php/54/usr/lib64/php/modules/ixed.lin (The specified module could not be found.), ext\php_/usr/php/54/usr/lib64/php/modules/ixed.lin.dll (The specified module could not be found.)) in Unknown on line 0
+[20-Jul-2018 17:07:36 UTC] PHP Warning:  Failed loading Zend extension '/usr/php/54/usr/lib64/php/modules/ZendGuardLoader.so' (tried: ext\/usr/php/54/usr/lib64/php/modules/ZendGuardLoader.so (The specified module could not be found.), ext\php_/usr/php/54/usr/lib64/php/modules/ZendGuardLoader.so.dll (The specified module could not be found.)) in Unknown on line 0
+[20-Jul-2018 17:07:36 UTC] PHP Warning:  PHP Startup: Unable to load dynamic library 'php_mysql.dll' (tried: ext\php_mysql.dll (The specified module could not be found.), ext\php_php_mysql.dll.dll (The specified module could not be found.)) in Unknown on line 0
+[20-Jul-2018 17:07:36 UTC] PHP Warning:  PHP Startup: Unable to load dynamic library 'imagick.so' (tried: ext\imagick.so (The specified module could not be found.), ext\php_imagick.so.dll (The specified module could not be found.)) in Unknown on line 0
+[20-Jul-2018 17:07:36 UTC] PHP Warning:  PHP Startup: Unable to load dynamic library 'http.so' (tried: ext\http.so (The specified module could not be found.), ext\php_http.so.dll (The specified module could not be found.)) in Unknown on line 0
+[20-Jul-2018 17:07:36 UTC] PHP Warning:  PHP Startup: Unable to load dynamic library 'magickwand.so' (tried: ext\magickwand.so (The specified module could not be found.), ext\php_magickwand.so.dll (The specified module could not be found.)) in Unknown on line 0
+[20-Jul-2018 17:07:36 UTC] PHP Warning:  PHP Startup: Unable to load dynamic library 'mailparse.so' (tried: ext\mailparse.so (The specified module could not be found.), ext\php_mailparse.so.dll (The specified module could not be found.)) in Unknown on line 0
+[20-Jul-2018 17:07:36 UTC] PHP Warning:  PHP Startup: Unable to load dynamic library 'oauth.so' (tried: ext\oauth.so (The specified module could not be found.), ext\php_oauth.so.dll (The specified module could not be found.)) in Unknown on line 0
+[20-Jul-2018 17:07:36 UTC] PHP Warning:  PHP Startup: Unable to load dynamic library 'oci8.so' (tried: ext\oci8.so (The specified module could not be found.), ext\php_oci8.so.dll (The specified module could not be found.)) in Unknown on line 0
+[20-Jul-2018 17:07:36 UTC] PHP Warning:  PHP Startup: Unable to load dynamic library 'uploadprogress.so' (tried: ext\uploadprogress.so (The specified module could not be found.), ext\php_uploadprogress.so.dll (The specified module could not be found.)) in Unknown on line 0
+[20-Jul-2018 11:10:44 America/Denver] PHP Warning:  file_get_contents(C:\Files\Programming\php\RESTful-PHP/../../../database-config.json): failed to open stream: No such file or directory in C:\Files\Programming\php\RESTful-PHP\database.php on line 134
+[20-Jul-2018 11:10:44 America/Denver] PHP Notice:  Undefined property: stdClass::$connector in C:\Files\Programming\php\RESTful-PHP\database.php on line 146
+[20-Jul-2018 11:10:44 America/Denver] PHP Warning:  require(connectors/.php): failed to open stream: No such file or directory in C:\Files\Programming\php\RESTful-PHP\database.php on line 147
+[20-Jul-2018 11:10:44 America/Denver] PHP Fatal error:  require(): Failed opening required 'connectors/.php' (include_path='.:/usr/php/54/usr/lib64:/usr/php/54/usr/share/pear') in C:\Files\Programming\php\RESTful-PHP\database.php on line 147
+[20-Jul-2018 11:11:22 America/Denver] PHP Fatal error:  Uncaught Error: Cannot use object of type stdClass as array in C:\Files\Programming\php\RESTful-PHP\database.php:137
+Stack trace:
+#0 C:\Files\Programming\php\RESTful-PHP\restful.php(8): include()
+#1 C:\Files\Programming\php\RESTful-PHP\test.php(29): RESTfulEndpoint->__construct()
+#2 {main}
+  thrown in C:\Files\Programming\php\RESTful-PHP\database.php on line 137
+[20-Jul-2018 11:11:48 America/Denver] PHP Warning:  Declaration of MySQLiConnector::connect($address, $db_name, $username, $password) should be compatible with DatabaseConnector::connect($address, $username, $password) in C:\Files\Programming\php\RESTful-PHP\connectors\mysqli.php on line 24
+[20-Jul-2018 11:11:48 America/Denver] PHP Fatal error:  Uncaught Error: Call to undefined function verify_table() in C:\Files\Programming\php\RESTful-PHP\database.php:165
+Stack trace:
+#0 C:\Files\Programming\php\RESTful-PHP\restful.php(8): include()
+#1 C:\Files\Programming\php\RESTful-PHP\test.php(29): RESTfulEndpoint->__construct()
+#2 {main}
+  thrown in C:\Files\Programming\php\RESTful-PHP\database.php on line 165
+[20-Jul-2018 11:12:01 America/Denver] PHP Warning:  Declaration of MySQLiConnector::connect($address, $db_name, $username, $password) should be compatible with DatabaseConnector::connect($address, $username, $password) in C:\Files\Programming\php\RESTful-PHP\connectors\mysqli.php on line 24
+[20-Jul-2018 11:12:01 America/Denver] PHP Warning:  First parameter must either be an object or the name of an existing class in C:\Files\Programming\php\RESTful-PHP\database.php on line 65
+[20-Jul-2018 11:12:01 America/Denver] PHP Warning:  mysqli::close(): Couldn't fetch mysqli in C:\Files\Programming\php\RESTful-PHP\connectors\mysqli.php on line 22
+[20-Jul-2018 11:12:48 America/Denver] PHP Warning:  Declaration of MySQLiConnector::connect($address, $db_name, $username, $password) should be compatible with DatabaseConnector::connect($address, $username, $password) in C:\Files\Programming\php\RESTful-PHP\connectors\mysqli.php on line 24
+[20-Jul-2018 11:12:48 America/Denver] PHP Warning:  First parameter must either be an object or the name of an existing class in C:\Files\Programming\php\RESTful-PHP\database.php on line 65
+[20-Jul-2018 11:12:48 America/Denver] PHP Warning:  mysqli::close(): Couldn't fetch mysqli in C:\Files\Programming\php\RESTful-PHP\connectors\mysqli.php on line 22
+[20-Jul-2018 11:14:05 America/Denver] PHP Warning:  Declaration of MySQLiConnector::connect($address, $db_name, $username, $password) should be compatible with DatabaseConnector::connect($address, $username, $password) in C:\Files\Programming\php\RESTful-PHP\connectors\mysqli.php on line 24
+[20-Jul-2018 11:14:05 America/Denver] PHP Warning:  First parameter must either be an object or the name of an existing class in C:\Files\Programming\php\RESTful-PHP\database.php on line 65
+[20-Jul-2018 11:14:05 America/Denver] PHP Warning:  mysqli::close(): Couldn't fetch mysqli in C:\Files\Programming\php\RESTful-PHP\connectors\mysqli.php on line 22
+[20-Jul-2018 11:14:31 America/Denver] PHP Warning:  Declaration of MySQLiConnector::connect($address, $db_name, $username, $password) should be compatible with DatabaseConnector::connect($address, $username, $password) in C:\Files\Programming\php\RESTful-PHP\connectors\mysqli.php on line 24
+[20-Jul-2018 11:14:31 America/Denver] PHP Warning:  First parameter must either be an object or the name of an existing class in C:\Files\Programming\php\RESTful-PHP\database.php on line 65
+[20-Jul-2018 11:14:31 America/Denver] PHP Warning:  mysqli::close(): Couldn't fetch mysqli in C:\Files\Programming\php\RESTful-PHP\connectors\mysqli.php on line 22
+[20-Jul-2018 11:15:51 America/Denver] PHP Warning:  Declaration of MySQLiConnector::connect($address, $db_name, $username, $password) should be compatible with DatabaseConnector::connect($address, $username, $password) in C:\Files\Programming\php\RESTful-PHP\connectors\mysqli.php on line 24
+[20-Jul-2018 11:15:51 America/Denver] PHP Warning:  First parameter must either be an object or the name of an existing class in C:\Files\Programming\php\RESTful-PHP\database.php on line 65
+[20-Jul-2018 11:15:51 America/Denver] PHP Warning:  mysqli::close(): Couldn't fetch mysqli in C:\Files\Programming\php\RESTful-PHP\connectors\mysqli.php on line 22
+[20-Jul-2018 11:15:51 America/Denver] PHP Notice:  Undefined variable: DEBUG in C:\Files\Programming\php\RESTful-PHP\database.php on line 168
+[20-Jul-2018 11:37:18 America/Denver] PHP Warning:  Declaration of MySQLiConnector::connect($address, $db_name, $username, $password) should be compatible with DatabaseConnector::connect($address, $username, $password) in C:\Files\Programming\php\RESTful-PHP\connectors\mysqli.php on line 24
+[20-Jul-2018 11:37:18 America/Denver] PHP Notice:  Trying to get property 'primary_key' of non-object in C:\Files\Programming\php\RESTful-PHP\database.php on line 66
+[20-Jul-2018 11:37:18 America/Denver] PHP Warning:  mysqli::close(): Couldn't fetch mysqli in C:\Files\Programming\php\RESTful-PHP\connectors\mysqli.php on line 22
+[20-Jul-2018 11:37:18 America/Denver] PHP Notice:  Undefined variable: DEBUG in C:\Files\Programming\php\RESTful-PHP\database.php on line 168
+[20-Jul-2018 11:37:37 America/Denver] PHP Warning:  Declaration of MySQLiConnector::connect($address, $db_name, $username, $password) should be compatible with DatabaseConnector::connect($address, $username, $password) in C:\Files\Programming\php\RESTful-PHP\connectors\mysqli.php on line 24
+[20-Jul-2018 11:37:37 America/Denver] PHP Notice:  Undefined variable: DEBUG in C:\Files\Programming\php\RESTful-PHP\database.php on line 168
+[20-Jul-2018 11:38:38 America/Denver] PHP Fatal error:  Uncaught Error: Cannot use object of type stdClass as array in C:\Files\Programming\php\RESTful-PHP\database.php:137
+Stack trace:
+#0 C:\Files\Programming\php\RESTful-PHP\restful.php(8): include()
+#1 C:\Files\Programming\php\RESTful-PHP\test.php(29): RESTfulEndpoint->__construct()
+#2 {main}
+  thrown in C:\Files\Programming\php\RESTful-PHP\database.php on line 137
+[20-Jul-2018 11:39:05 America/Denver] PHP Warning:  Declaration of MySQLiConnector::connect($address, $db_name, $username, $password) should be compatible with DatabaseConnector::connect($address, $username, $password) in C:\Files\Programming\php\RESTful-PHP\connectors\mysqli.php on line 24
+[20-Jul-2018 11:39:05 America/Denver] PHP Notice:  Undefined variable: DEBUG in C:\Files\Programming\php\RESTful-PHP\database.php on line 168
+[20-Jul-2018 11:41:22 America/Denver] PHP Warning:  Declaration of MySQLiConnector::connect($address, $db_name, $username, $password) should be compatible with DatabaseConnector::connect($address, $username, $password) in C:\Files\Programming\php\RESTful-PHP\connectors\mysqli.php on line 24
+[20-Jul-2018 11:41:22 America/Denver] PHP Notice:  Undefined variable: DEBUG in C:\Files\Programming\php\RESTful-PHP\database.php on line 168
+[20-Jul-2018 11:41:58 America/Denver] PHP Warning:  Declaration of MySQLiConnector::connect($address, $db_name, $username, $password) should be compatible with DatabaseConnector::connect($address, $username, $password) in C:\Files\Programming\php\RESTful-PHP\connectors\mysqli.php on line 24
+[20-Jul-2018 11:42:16 America/Denver] PHP Warning:  Declaration of MySQLiConnector::connect($address, $db_name, $username, $password) should be compatible with DatabaseConnector::connect($address, $username, $password) in C:\Files\Programming\php\RESTful-PHP\connectors\mysqli.php on line 24

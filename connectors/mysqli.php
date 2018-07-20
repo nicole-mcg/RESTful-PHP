@@ -18,6 +18,14 @@
             return $this->connection->query($sql);
         }
 
+        function insert_id() {
+            return $this->connection->insert_id;
+        }
+
+        function num_rows() {
+            return $this->connection->affected_rows;
+        }
+
         function disconnect() {
             return $this->connection->close();
         }

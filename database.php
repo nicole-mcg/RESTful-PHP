@@ -15,6 +15,14 @@
 
         }
 
+        function insert_id() {
+            
+        }
+
+        function num_rows() {
+            
+        }
+
         function disconnect() {
 
         }
@@ -118,6 +126,14 @@
             }
 
             return true;
+        }
+
+        function insert_id() {
+            return $this->connector->insert_id();
+        }
+
+        function num_rows() {
+            return $this->connector->num_rows();
         }
 
         function disconnect($is_error=false, $message = '') {
