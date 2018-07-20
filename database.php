@@ -104,7 +104,6 @@
             $query .= ")";
 
             $result = $this->connector->query($query);
-            echo var_dump($result);
 
             if (!$result) {
                 $this->error = true;
@@ -112,6 +111,7 @@
 
                 if ($DEBUG) {
                     echo $query, $this->connector->connection->error . '<br/>';
+                    echo var_dump($result);
                 }
 
                 return false;
