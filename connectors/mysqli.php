@@ -1,8 +1,6 @@
 <?php
-    
-    require_once('../database.php');
 
-    class MySQLiConnector {
+    class MySQLiConnector extends DatabaseConnector {
 
         function connect($address, $db_name, $username, $password) {
             $mysqli = new mysqli($address, $username, $password, $db_name);
