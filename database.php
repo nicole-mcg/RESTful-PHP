@@ -37,7 +37,7 @@
             if (!array_key_exists($table_name, self::$table_config)) {
                 $this->message = 'Could not find configuration for table ' . $table_name;
                 $this->error = true;
-                return;
+                return false;
             }
 
             $table_config = self::$table_config->$table_name;
@@ -62,17 +62,19 @@
                 $index++;
             }
 
-            if (property_exists($table_config, 'primary_key')) {
-                $query .= ', PRIMARY KEY (`' . $table_config->primary_key . '`)';
+            if (array_key_exists('primary_key', $table_config)) {
+                $query .= ', PRIMARY KEY (`' . $table_config['primary_key'] . '`)';
             }
 
             $query .= ');';
 
             $result = $this->connector->query($query);
             if (!$result) {
-                echo $query;
-                $this->disconnect(true, 'Could not verify table.');
+                $this->message = "Could not verify table " . $table_name;
+                return false;
             }
+
+            return true;
         }
 
         function insert($table, $values) {
@@ -107,7 +109,7 @@
                 $this->error = true;
                 $this->message = 'Could not insert into table ' . $table;
 
-                if (DEBUG) {
+                if ($DEBUG) {
                     echo $query, $this->connector->connection->error . '<br/>';
                 }
 
@@ -134,6 +136,13 @@
     $json_string = file_get_contents(__DIR__ . '/../../../database-config.json');
     $database_config = json_decode($json_string);
 
+    $database_config->tables->restful_accounts = [
+        'primary_key' => 'id',
+        'id' => 'INT NOT NULL AUTO_INCREMENT',
+        'username' => 'CHAR(12)',
+        'password' => 'CHAR(64) NOT NULL'
+    ];
+
     DatabaseConnection::$table_config = $database_config->tables;
 
     $connectorName = $database_config->connector;
@@ -150,8 +159,19 @@
     $connection = new DatabaseConnection($connector);
 
     if ($result !== TRUE) {
+        //TODO error
         $connection->disconnect(true, $result);
         echo $result;
+    }
+
+    if (!$connection->verify_table('restful_accounts')) {
+        //TODO error
+        $connection->disconnect(true, $result);
+        echo 'could not verify accounts table', $connection->message, $DEBUG;
+
+        if ($DEBUG) {
+
+        }
     }
 
     return $connection;
