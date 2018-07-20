@@ -131,7 +131,7 @@
     }
 
     //TODO make sure file exists
-    $json_string = file_get_contents(__DIR__ . '/../database-config.json');
+    $json_string = file_get_contents(__DIR__ . '/../../database-config.json');
     $database_config = json_decode($json_string);
 
     DatabaseConnection::$table_config = $database_config->tables;
