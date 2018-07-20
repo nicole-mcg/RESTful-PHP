@@ -136,7 +136,14 @@
             return $this->connector->num_rows();
         }
 
-        function select($table, $columns=null, $where=null, $group_by=null, $order_by=null, $limit=null, $desc=true) {
+        // Params: columns (string[]), where (string), group_by (string), order_by (string), limit (number)
+        function select($table, $params, $desc=true) {
+            $columns = $params['columns'];
+            $where = $params['where'];
+            $group_by = $params['group_by'];
+            $order_by = $params['order_by'];
+            $limit = $params['limit'];
+
             $query = "SELECT ";
 
             if ($columns) {
@@ -174,7 +181,7 @@
             }
 
             $result = $this->connector->query($query);
-            
+
             return $result;
         }
 
