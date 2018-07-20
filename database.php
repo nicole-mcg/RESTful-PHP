@@ -169,7 +169,7 @@
                 $query .= "GROUP BY" . $group_by . " ";
             }
 
-            $query .= "ORDER BY "
+            $query .= "ORDER BY ";
             if ($order_by) {
                 $query .= $order_by . " ";
             }
