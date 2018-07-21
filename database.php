@@ -232,7 +232,6 @@
                 $query .= "WHERE " . $where . " ";
             }
 
-            echo $query;
             $result = $this->connector->query($query);
 
             return $result;
