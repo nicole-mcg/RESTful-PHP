@@ -25,7 +25,7 @@ class RESTfulEndpoint {
     // Replace items
     function _put() {
         if (method_exists($this, 'put')) {
-            $params = parse_str(file_get_contents("php://input"),$post_vars);
+            $params = parse_str(file_get_contents("php://input"),$params);
             return $this->put($params);
         }
     }
@@ -33,7 +33,7 @@ class RESTfulEndpoint {
     // Update items
     function _patch() {
         if (method_exists($this, 'patch')) {
-            $params = parse_str(file_get_contents("php://input"),$post_vars);
+            $params = parse_str(file_get_contents("php://input"),$params);
             return $this->patch($params);
         }
     }
@@ -41,7 +41,7 @@ class RESTfulEndpoint {
     // Delete items
     function _delete() {
         if (method_exists($this, 'delete')) {
-            $params = parse_str(file_get_contents("php://input"),$post_vars);
+            $params = parse_str(file_get_contents("php://input"),$params);
             return $this->delete($params);
         }
     }
