@@ -216,7 +216,7 @@
         }
 
         function update($table, $values, $where=null) {
-            $query = "UPDATE " . $table . ' SET';
+            $query = "UPDATE " . $table . ' SET ';
 
 
             $first = true;
@@ -224,7 +224,7 @@
                 if (!$first) {
                     $query .= ',';
                 }
-                $query .= $key . '=' . $value . ' ';
+                $query .= $key . '=\'' . $value . '\' ';
                 $first = false;
             }
 
@@ -232,6 +232,7 @@
                 $query .= "WHERE " . $where . " ";
             }
 
+            echo $query;
             $result = $this->connector->query($query);
 
             return $result;

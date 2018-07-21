@@ -15,7 +15,8 @@
         }
 
         function query($sql) {
-            return new MySQLiResult($this->connection->query($sql));
+            $result = $this->connection->query($sql);
+            return $result ? new MySQLiResult($result) : false;
         }
 
         function insert_id() {
