@@ -237,6 +237,31 @@
             return $result;
         }
 
+        function delete($table, $where) {
+
+            if (!$where) {
+                if ($DEBUG) {
+                    echo "You almost deleted the whole table! You need a where clause.";
+                }
+
+                return null;
+            }
+
+            $query = "DELETE FROM " . $table . ' ';
+
+            $query .= "WHERE " . $where . " ";
+
+            $result = $this->connector->query($query);
+
+            return $result;
+        }
+
+        function delete_all($table) {
+            $result = $this->connector->query($"DELETE FROM " . $table . ' ');
+
+            return $result;
+        }
+
         function disconnect($is_error=false, $message = '') {
             $this->error = $is_error;
 
