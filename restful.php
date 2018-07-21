@@ -84,7 +84,7 @@ class DatabaseEndpoint extends RESTfulEndpoint {
 
     function __construct($tableName) {
         parent::__construct();
-        $this->table = $tableName
+        $this->table = $tableName;
     }
 
     function verify_table() {
