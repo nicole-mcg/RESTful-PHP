@@ -102,9 +102,9 @@
                 }
 
                 $type = $value->type;
-                $nullable = property_exists($value, 'nullable') ? $value->nullable : true;
-                $auto_increment = property_exists($value, 'auto_increment') ? $value->auto_increment : false;
-                $default = property_exists($value, 'default') ? $value->default : null;
+                $nullable = array_key_exists('nullable', $value) ? $value->nullable : true;
+                $auto_increment = array_key_exists('auto_increment', $value) ? $value->auto_increment : false;
+                $default = array_key_exists('default', $value) ? $value->default : null;
 
                 $query .= '`' . $key . '` ' . $type . 
                     ($nullable ? '' : ' NOT NULL ') . 
