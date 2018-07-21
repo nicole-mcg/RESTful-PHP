@@ -257,7 +257,7 @@
         }
 
         function delete_all($table) {
-            $result = $this->connector->query($"DELETE FROM " . $table . ' ');
+            $result = $this->connector->query("DELETE FROM " . $table . ' ');
 
             return $result;
         }
