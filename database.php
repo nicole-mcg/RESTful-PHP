@@ -101,10 +101,10 @@
                     return false;
                 }
 
-                $type = $value->type;
-                $nullable = array_key_exists('nullable', $value) ? $value->nullable : true;
-                $auto_increment = array_key_exists('auto_increment', $value) ? $value->auto_increment : false;
-                $default = array_key_exists('default', $value) ? $value->default : null;
+                $type = $value['type'];
+                $nullable = array_key_exists('nullable', $value) ? $value['nullable'] : true;
+                $auto_increment = array_key_exists('auto_increment', $value) ? $value['auto_increment'] : false;
+                $default = array_key_exists('default', $value) ? $value['default'] : null;
 
                 $query .= '`' . $key . '` ' . $type . 
                     ($nullable ? '' : ' NOT NULL ') . 
