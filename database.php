@@ -92,7 +92,6 @@
 
                 $value = (array) $value;
 
-
                 if ($index != 0) {
                     $query .= ', ';
                 }
@@ -122,7 +121,6 @@
 
             $query .= ');';
 
-            echo $query;
             $result = $this->connector->query($query);
             if (!$result) {
                 $this->message = "Could not verify table " . $table_name;
