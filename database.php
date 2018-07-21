@@ -95,7 +95,21 @@
                     $query .= ', ';
                 }
 
-                $query .= '`' . $key . '` ' . $value;
+                if (!array_key_exists('type', $value)) {
+                    $this->message = "Could not find type for column: " . $key;
+                    $this->error = true;
+                    return false;
+                }
+
+                $type = $value['type'];
+                $nullable = array_key_exists('nullable', $value) ? $value['nullable'] : true;
+                $auto_increment = array_key_exists('auto_increment', $value) ? $value['auto_increment'] : false;
+                $default = array_key_exists('default', $value) ? $value['default'] : null;
+
+                $query .= '`' . $key . '` ' . $type . 
+                    ($nullable ? '' : ' NOT NULL ') . 
+                    ($default === null ? '' . ' DEFAULT ' . $default) . 
+                    ($auto_increment ? ' AUTO_INCREMENT' : '');
 
                 $index++;
             }
@@ -281,9 +295,19 @@
 
     $database_config->tables->restful_accounts = (object) [
         'primary_key' => 'id',
-        'id' => 'INT NOT NULL AUTO_INCREMENT',
-        'username' => 'CHAR(12)',
-        'password' => 'CHAR(64) NOT NULL'
+        'id' => [
+            'type' => 'INT',
+            'nullable' => false,
+            'auto_increment': true
+        ],
+        'username' => [
+            'type' => 'CHAR(12)',
+            'nullable' => false
+        ],
+        'password' => [
+            'type' => 'CHAR(64)',
+            'nullable' => false
+        ]
     ];
 
     DatabaseConnection::$table_config = $database_config->tables;
