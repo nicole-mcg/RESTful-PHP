@@ -97,7 +97,7 @@ class DatabaseEndpoint extends RESTfulEndpoint {
         }
 
         $where = null;
-        if (array_key_exists('id', $params) {
+        if (array_key_exists('id', $params)) {
             $where = 'id=' . $params['id'];
         }
 
