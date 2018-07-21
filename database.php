@@ -298,7 +298,7 @@
         'id' => [
             'type' => 'INT',
             'nullable' => false,
-            'auto_increment': true
+            'auto_increment' => true
         ],
         'username' => [
             'type' => 'CHAR(12)',
