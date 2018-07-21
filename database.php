@@ -215,6 +215,28 @@
             return $result;
         }
 
+        function update($table, $values, $where=null) {
+            $query = "UPDATE " . $table . ' SET';
+
+
+            $first = true;
+            foreach ($values as $key => $value) {
+                if (!$first) {
+                    $query .= ',';
+                }
+                $query .= $key . '=' . $value . ' ';
+                $first = false;
+            }
+
+            if ($where) {
+                $query .= "WHERE " . $where . " ";
+            }
+
+            $result = $this->connector->query($query);
+
+            return $result;
+        }
+
         function disconnect($is_error=false, $message = '') {
             $this->error = $is_error;
 
