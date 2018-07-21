@@ -96,6 +96,11 @@ class DatabaseEndpoint extends RESTfulEndpoint {
             return ['error' => 'Could not find database table'];
         }
 
+        $where = null;
+        if (array_key_exists('id', $params) {
+            $where = 'id=' . $params['id'];
+        }
+
         $limit = 50;
         if (array_key_exists('limit', $params)) {
             $limit = $params['limit'];
@@ -104,7 +109,7 @@ class DatabaseEndpoint extends RESTfulEndpoint {
         // TODO verify columns are correct
         $result = $this->db->select($this->table, [
             'limit' => $limit
-        ]);
+        ], $where);
 
         if (!$result) {
             return ['error' => 'Could not find item'];
