@@ -108,7 +108,7 @@
 
                 $query .= '`' . $key . '` ' . $type . 
                     ($nullable ? '' : ' NOT NULL ') . 
-                    ($default === null ? '' . ' DEFAULT ' . $default) . 
+                    ($default === null ? '' : ' DEFAULT ' . $default) . 
                     ($auto_increment ? ' AUTO_INCREMENT' : '');
 
                 $index++;
