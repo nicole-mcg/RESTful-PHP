@@ -106,6 +106,10 @@ class DatabaseEndpoint extends RESTfulEndpoint {
             'limit' => $limit
         ]);
 
+        if (!$result) {
+            return ['error' => 'Could not find item'];
+        }
+
         $response = [];
         while ($row = $result->get_next_row()) {
             $response[] = $row;
