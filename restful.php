@@ -80,4 +80,82 @@ class RESTfulEndpoint {
     }
 }
 
+class DatabaseEndpoint extends RESTfulEndpoint {
+
+    function __construct($tableName) {
+        parent::__construct();
+        $this->table = $tableName
+    }
+
+    function verify_table() {
+        return $this->db->verify_table($this->table);
+    }
+
+    function get($params) {
+        if (!$this->verify_table()) {
+            return ['error' => 'Could not find database table'];
+        }
+
+        $limit = 50;
+        if (array_key_exists('limit', $params)) {
+            $limit = $params['limit'];
+        }
+
+        // TODO verify columns are correct
+        $result = $this->db->select($this->table, [
+            'limit' => $limit
+        ]);
+
+        $response = [];
+        while ($row = $result->get_next_row()) {
+            $response[] = $row;
+        }
+
+        return $response;
+    }
+
+    function post($params) {
+        if (!$this->verify_table()) {
+            return ['error' => 'Could not find table'];
+        }
+
+        if (!$this->db->insert($this->table, $params)) {
+            return ['error' => 'Could not add item'];
+        }
+
+        return [
+            'message' => 'Successfully added item',
+            'id' => $this->db->insert_id()
+        ];
+    }
+
+    function put($params) {
+        // TODO needs verified columns, must have all
+        return ['message' => 'PUT method'];
+    }
+
+    function patch($params) {
+        if (!$this->verify_table()) {
+            return ['error' => 'Could not find table'];
+        }
+
+        if (!array_key_exists('id', $params)) {
+            return ['error' => 'You must enter an ID'];
+        }
+
+        $result = $this->db->update('blog_posts', $params, 'id=' . $params['id']);
+
+        if (!$result) {
+            return ['error' => 'Could not update item'];
+        }
+
+        return ['message' => 'Successfully updated item'];
+    }
+
+    function delete($params) {
+        return ['message' => 'DELETE method'];
+    }
+
+}
+
 ?>
