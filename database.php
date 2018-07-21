@@ -101,7 +101,7 @@
             }
 
             if (property_exists($table_config, 'primary_key')) {
-                $query .= ', PRIMARY KEY (`' . $table_config->primary_key . '`)';
+                $query .= ', CONSTRAINT ' . $table_config->primary_key . ' PRIMARY KEY (`' . $table_config->primary_key . '`)';
             }
 
             $query .= ');';
