@@ -210,7 +210,6 @@
                 $query .= "LIMIT " . $limit;
             }
 
-            echo $query;
             $result = $this->connector->query($query);
 
             return $result;
