@@ -199,17 +199,18 @@
                 $query .= "GROUP BY" . $group_by . " ";
             }
 
-            $query .= "ORDER BY ";
+            
             if ($order_by) {
+                $query .= "ORDER BY ";
                 $query .= $order_by . " ";
+                $query .= $desc ? "DESC " : "ASC ";
             }
-
-            $query .= $desc ? "DESC " : "ASC ";
 
             if ($limit) {
                 $query .= "LIMIT " . $limit;
             }
 
+            echo $query;
             $result = $this->connector->query($query);
 
             return $result;
