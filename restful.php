@@ -163,7 +163,23 @@ class DatabaseEndpoint extends RESTfulEndpoint {
     }
 
     function delete($params) {
-        return ['message' => 'DELETE method'];
+        if (!$this->verify_table()) {
+            return ['error' => 'Could not find table'];
+        }
+
+        $id = $params['id'];
+
+        if (!$id) {
+            return ['error' => 'You did not enter an ID to delete'];
+        }
+
+        $result = $this->db->delete($this->table, 'id=' . $id);
+
+        if (!$result) {
+            return ['error' => 'Could not delete item'];
+        }
+
+        return ['message' => 'Successfully deleted item'];
     }
 
 }
