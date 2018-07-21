@@ -167,7 +167,7 @@
         }
 
         // Params: columns (string[]), where (string), group_by (string), order_by (string), limit (number)
-        function select($table, $params, $desc=true) {
+        function select($table, $params) {
             $columns = $params['columns'];
             $where = $params['where'];
             $group_by = $params['group_by'];

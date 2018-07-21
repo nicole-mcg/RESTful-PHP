@@ -108,8 +108,9 @@ class DatabaseEndpoint extends RESTfulEndpoint {
 
         // TODO verify columns are correct
         $result = $this->db->select($this->table, [
-            'limit' => $limit
-        ], $where);
+            'limit' => $limit,
+            'where' => $where
+        ]);
 
         if (!$result) {
             return ['error' => 'Could not find item'];
