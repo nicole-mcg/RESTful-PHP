@@ -90,6 +90,8 @@
                     continue;
                 }
 
+                $value = (array) $value;
+
 
                 if ($index != 0) {
                     $query .= ', ';
