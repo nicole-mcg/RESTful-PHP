@@ -82,6 +82,7 @@
 
             $query = 'CREATE TABLE IF NOT EXISTS `' . $table_name . '` (';
 
+            $foreign_keys = [];
             $len = count((array) $table_config);
             $index = 0;
             foreach ($table_config as $key => $value) {
@@ -106,11 +107,73 @@
                 $nullable = array_key_exists('nullable', $value) ? $value['nullable'] : true;
                 $auto_increment = array_key_exists('auto_increment', $value) ? $value['auto_increment'] : false;
                 $default = array_key_exists('default', $value) ? $value['default'] : null;
+                $foreign_key = array_key_exists('foreign_key', $value) ? (array) $value['foreign_key'] : null;
 
                 $query .= '`' . $key . '` ' . $type . 
-                    ($nullable ? '' : ' NOT NULL ') . 
-                    ($default === null ? '' : ' DEFAULT ' . $default) . 
+                    ($nullable ? '' : ' NOT NULL') . 
+                    ($default === null ? '' : ' DEFAULT ' . var_export($default, true)) . 
                     ($auto_increment ? ' AUTO_INCREMENT' : '');
+
+                if ($foreign_key !== null) {
+
+                    if (!$foreign_key['table']) {
+                        $this->message = "No 'table' key in foreign_key: " . $key;
+                        $this->error = true;
+                        return false;
+                    }
+
+                    if (!$foreign_key['column']) {
+                        $this->message = "No 'column' key in foreign_key: " . $key;
+                        $this->error = true;
+                        return false;
+                    }
+
+                    $VALID_ACTIONS = [
+                        'cascade',
+                        'restrict',
+                        'no action',
+                        'set default',
+                        'set null'
+                    ];
+
+                    if ($foreign_key['on_delete']) {
+                        $found = false;
+                        foreach ($VALID_ACTIONS as $value) {
+                            if (strtolower($foreign_key['on_delete']) === $value) {
+                                $found = true;
+                                break;
+                            }
+                        }
+
+                        if (!$found) {
+                            $this->message = 'Error with column ' . $key . 'on_delete must be one of ' . join(' ', $VALID_ACTIONS);
+                            $this->error = true;
+                            return false;
+                        }
+                    }
+
+                    if ($foreign_key['on_update']) {
+                        $found = false;
+                        foreach ($VALID_ACTIONS as $value) {
+                            if (strtolower($foreign_key['on_update']) === $value) {
+                                $found = true;
+                                break;
+                            }
+                        }
+
+                        if (!$found) {
+                            $this->message = 'Error with column ' . $key . 'on_update must be one of ' . join(' ', $VALID_ACTIONS);
+                            $this->error = true;
+                            return false;
+                        }
+                    }
+
+                    $foreign_key['og_col'] = $key;
+
+                    $foreign_keys[] = $foreign_key;
+                }
+
+
 
                 $index++;
             }
@@ -119,11 +182,23 @@
                 $query .= ', CONSTRAINT ' . $table_config->primary_key . ' PRIMARY KEY (`' . $table_config->primary_key . '`)';
             }
 
+            foreach ($foreign_keys as $foreign_key) {
+                $query .= ', CONSTRAINT fk_' . $foreign_key['og_col'] . ' FOREIGN KEY(' . $foreign_key['og_col'] . ')' . ' REFERENCES ' . $foreign_key['table'] . '(' . $foreign_key['column'] . ')';
+
+                if ($foreign_key['on_update']) {
+                    $query .= ' ON UPDATE ' . $foreign_key['on_update'];
+                }
+
+                if ($foreign_key['on_delete']) {
+                    $query .= ' ON DELETE ' . $foreign_key['on_delete'];
+                }
+             }
+
             $query .= ');';
 
             $result = $this->connector->query($query);
             if (!$result) {
-                $this->message = "Could not verify table " . $table_name . "<br/>Query: " . $query;
+                $this->message = "Could not verify table " . $table_name . "<br/>Query: " . $query . '<br/> Error: ' . $this->connector->connection->error;
                 return false;
             }
 
