@@ -365,9 +365,15 @@
 
     }
 
+    $DEBUG = false;
+
     //TODO make sure file exists
     $json_string = file_get_contents(__DIR__ . '/../../../rest-config.json');
     $database_config = json_decode($json_string);
+
+    if ($database_config->debug) {
+        $DEBUG = true;
+    }
 
     $database_config->tables->restful_accounts = (object) [
         'primary_key' => 'id',
