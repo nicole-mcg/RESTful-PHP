@@ -123,7 +123,7 @@
 
             $result = $this->connector->query($query);
             if (!$result) {
-                $this->message = "Could not verify table " . $table_name;
+                $this->message = "Could not verify table " . $table_name . "<br/>Query: " . $query;
                 return false;
             }
 
@@ -291,7 +291,7 @@
     }
 
     //TODO make sure file exists
-    $json_string = file_get_contents(__DIR__ . '/../../../database-config.json');
+    $json_string = file_get_contents(__DIR__ . '/../../../rest-config.json');
     $database_config = json_decode($json_string);
 
     $database_config->tables->restful_accounts = (object) [
