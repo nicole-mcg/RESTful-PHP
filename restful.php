@@ -51,7 +51,7 @@ class RESTfulEndpoint {
     function handleRequest() {
         $method = $_SERVER['REQUEST_METHOD'];
 
-        if ($this->authenticate === null || $this->authenticate) {
+        if ($this->authenticate === null || $this->authenticate($method)) {
 
             switch($method) {
 
