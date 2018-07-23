@@ -1,5 +1,7 @@
 # RESTful-PHP
 
+In-depth tutorial: http://ossoftware.ca/blog-post?id=1
+
 This is a PHP framework for a RESTful API. It provides an easy framework to add endpoints that handle any request type. It also handles database connection, creation and queries. 
 
 In order to make this easy to set up, it uses HTTP protocol for data (GET, POST) and does not handle routing. Example request: `http://localhost/api/endpoint.php?id=5`. Responses are in JSON.
