@@ -367,8 +367,10 @@
 
     $DEBUG = false;
 
+    $config_path = $CONFIG_PATH ? $CONFIG_PATH : '/../../../../rest-config.json';
+
     //TODO make sure file exists
-    $json_string = file_get_contents(__DIR__ . '/../../../rest-config.json');
+    $json_string = file_get_contents(__DIR__ . $config_path);
     $database_config = json_decode($json_string);
 
     if ($database_config->debug) {
