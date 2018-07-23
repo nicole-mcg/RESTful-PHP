@@ -9,7 +9,7 @@ In order to make this easy to set up, it uses HTTP protocol for data (GET, POST)
 ## Usage
 
 - configure `rest-config.json` (Don't put this in a public folder!)
-- Include the `restful.php`
+- Include `restful.php`
 - Extend `RESTfulEndpoint`
 - Handle the request
 
