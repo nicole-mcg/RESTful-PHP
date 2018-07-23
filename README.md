@@ -49,5 +49,18 @@ Access database from within endpoints via `$this->db`. Methods in `DatabaseConne
 
 - `insert(string $tableName, array $values)` - Inserts the array into the specified table. The array's keys should match the column names of the table being inserted into
 
+- `select(string $tableName, array $params)` - Retrieves data from the database
+    `$params` - Keys: `string[] column`, `string where`, `string group_by`, `string order_by`, `int limit`. `where`, `group_by`, and `order_by` are all placed directory in SQL queries as shown: `SELECT * WHERE $where`
+    
+- `update(string $tableName, array $values, string $where)` - Updates the table with the specified values on rows where `$where` evaluates to true. See `select` above for contents of `$where`
+
+- `updateAll(string $tableName, array $values)` - Updates all rows in the table. This functionality is prevented in `update`, so it is provided here.
+
+- `delete(string $tableName, string $where)` - Deletes data from the table on rows where `$where` evaluates to true. See `select` above for contents of `$where`
+
+- `updateAll(string $tableName, array $values)` - Deletes all rows in the table. This functionality is prevented in `delete`, so it is provided here.
+
+
+
 - `disconnect($isError=false, $message='')` - Closes the server connection.
 `
