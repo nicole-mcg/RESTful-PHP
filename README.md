@@ -10,8 +10,18 @@ In order to make this easy to set up, it uses HTTP protocol for data (GET, POST)
 
 - configure `rest-config.json` (Don't put this in a public folder!)
 - Include `restful.php`
-- Extend `RESTfulEndpoint`
+- Extend `RESTfulEndpoint` or `DatabaseEndpoint`
 - Handle the request
+```
+<?php
+
+    include('../restful.php');
+
+    $endpoint = new DatabaseEndpoint('db_name');
+    $endpoint->handleRequest();
+
+?>
+```
 
 ```
 <?php
