@@ -377,23 +377,6 @@
         $DEBUG = true;
     }
 
-    $database_config->tables->restful_accounts = (object) [
-        'primary_key' => 'id',
-        'id' => [
-            'type' => 'INT',
-            'nullable' => false,
-            'auto_increment' => true
-        ],
-        'username' => [
-            'type' => 'CHAR(12)',
-            'nullable' => false
-        ],
-        'password' => [
-            'type' => 'CHAR(64)',
-            'nullable' => false
-        ]
-    ];
-
     DatabaseConnection::$table_config = $database_config->tables;
 
     $connectorName = $database_config->connector;
@@ -412,15 +395,6 @@
     if ($result !== TRUE) {
         //TODO error
         echo $result;
-    }
-
-    if (!$connection->verify_table('restful_accounts')) {
-        //TODO error
-        echo 'could not verify accounts table', $connection->message, var_dump($connection);
-
-        if ($DEBUG) {
-
-        }
     }
 
     return $connection;
