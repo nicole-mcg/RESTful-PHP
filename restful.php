@@ -4,8 +4,10 @@ define("DEBUG", true);
 
 class RESTfulEndpoint {
 
-    function __construct() {
+    function __construct($authenticate=null) {
         $this->db = include('database.php');
+
+        $this->authenticate = $authenticate;
     }
     
     // Get items
@@ -49,31 +51,37 @@ class RESTfulEndpoint {
     function handleRequest() {
         $method = $_SERVER['REQUEST_METHOD'];
 
-        switch($method) {
+        if ($this->authenticate === null || $this->authenticate) {
 
-            case 'GET':
-                $response = $this->_get();
-                break;
+            switch($method) {
 
-            case 'POST':
-                $response = $this->_post();
-                break;
+                case 'GET':
+                    $response = $this->_get();
+                    break;
 
-            case 'PUT':
-                $response = $this->_put();
-                break;
+                case 'POST':
+                    $response = $this->_post();
+                    break;
 
-            case 'PATCH':
-                $response = $this->_patch();
-                break;
+                case 'PUT':
+                    $response = $this->_put();
+                    break;
 
-            case 'DELETE':
-                $response = $this->_delete();
-                break;
-        }
+                case 'PATCH':
+                    $response = $this->_patch();
+                    break;
 
-        if (empty($response)) {
-            $response = [];
+                case 'DELETE':
+                    $response = $this->_delete();
+                    break;
+            }
+
+            if (empty($response)) {
+                $response = [];
+            }
+
+        } else {
+            $response = ['error' => 'You do not have permission to use this part of the API'];
         }
 
         echo json_encode($response);
