@@ -1,8 +1,8 @@
 <?php 
 
     if (!isset($_COOKIE['rest_auth'])) {
-        $GLOBALS['rest_id'] = hash('sha256', 'salt' + rand());
-        setcookie('rest_auth', $REST_ID, time() + 60*60*24*365);
+        $GLOBALS['rest_id'] = hash('sha256', 'salt' . rand());
+        setcookie('rest_auth', $GLOBALS['rest_id'], time() + (86400 * 365), '/');
     } else {
         $GLOBALS['rest_id'] = $_COOKIE['rest_auth'];
     }
