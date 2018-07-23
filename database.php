@@ -365,7 +365,7 @@
 
     }
 
-    $DEBUG = false;
+    $GLOBALS['debug'] = false;
 
     $config_path = $CONFIG_PATH ? $CONFIG_PATH : '/../../../../rest-config.json';
 
@@ -374,7 +374,7 @@
     $database_config = json_decode($json_string);
 
     if ($database_config->debug) {
-        $DEBUG = true;
+        $GLOBALS['debug'] = true;
     }
 
     DatabaseConnection::$table_config = $database_config->tables;
