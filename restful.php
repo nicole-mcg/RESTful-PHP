@@ -4,10 +4,12 @@ define("DEBUG", true);
 
 class RESTfulEndpoint {
 
-    function __construct($authenticate=null) {
+    function __construct() {
         $this->db = include('database.php');
+    }
 
-        $this->authenticate = $authenticate;
+    function authenticate($method) {
+        return true;
     }
     
     // Get items
@@ -51,7 +53,7 @@ class RESTfulEndpoint {
     function handleRequest() {
         $method = $_SERVER['REQUEST_METHOD'];
 
-        if ($this->authenticate === null || $this->authenticate($method)) {
+        if ($this->authenticate($method)) {
 
             switch($method) {
 
