@@ -237,7 +237,7 @@
                 $this->error = true;
                 $this->message = 'Could not insert into table ' . $table;
 
-                if ($DEBUG) {
+                if ($GLOBALS['debug']) {
                     echo $query, $this->connector->connection->error . '<br/>';
                     echo var_dump($result);
                 }
@@ -279,7 +279,7 @@
                 $query .= '* ';
             }
 
-            $query .= "FROM " . $table . " ";
+            $query .= " FROM " . $table . " ";
 
             if ($where) {
                 $query .= "WHERE " . $where . " ";
@@ -291,9 +291,7 @@
 
             
             if ($order_by) {
-                $query .= "ORDER BY ";
-                $query .= $order_by . " ";
-                $query .= $desc ? "DESC " : "ASC ";
+                $query .= "ORDER BY " . $order_by . " ";
             }
 
             if ($limit) {
@@ -305,9 +303,16 @@
             return $result;
         }
 
-        function update($table, $values, $where=null) {
+        function update($table, $values, $where) {
             $query = "UPDATE " . $table . ' SET ';
 
+            if (!$where) {
+                if ($GLOBALS['debug']) {
+                    echo "You almost changed the whole table! You need a where clause.";
+                }
+
+                return null;
+            }
 
             $first = true;
             foreach ($values as $key => $value) {
@@ -327,10 +332,28 @@
             return $result;
         }
 
+        function update_all($table, $values) {
+            $query = "UPDATE " . $table . ' SET ';
+
+
+            $first = true;
+            foreach ($values as $key => $value) {
+                if (!$first) {
+                    $query .= ',';
+                }
+                $query .= $key . '=\'' . $value . '\' ';
+                $first = false;
+            }
+
+            $result = $this->connector->query($query);
+
+            return $result;
+        }
+
         function delete($table, $where) {
 
             if (!$where) {
-                if ($DEBUG) {
+                if ($GLOBALS['debug']) {
                     echo "You almost deleted the whole table! You need a where clause.";
                 }
 
