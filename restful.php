@@ -13,6 +13,14 @@
 
         function __construct() {
             $this->db = include('database.php');
+
+            if ($this->db === null) {
+                if ($GLOBALS['debug']) {
+                    echo 'Could not create database connection.';
+                }
+                echo "Could not connect to database";
+                die();
+            }
         }
 
         function authenticate($method) {
@@ -146,17 +154,16 @@
                 return ['error' => 'Could not find table'];
             }
 
-            $table_config = DatabaseConnection::$table_config->($this->table);
+            $table_config = (array) DatabaseConnection::$table_config->$this->table;
             if ($table_config) {
-                for ($table_config as $key => $value) {
-                    if (!$table_config->$key) {
-                        return ['error' => 'Could not validate param ' . ($GLOBALS['debug'] ? "column=" . $key : '')]
+                foreach ($table_config as $key => $value) {
+                    if (!isset($value->nullable) || (!$value->nullable && !isset($params[$key]))) {
+                        return ['error' => 'Missing parameter. Please notify site administrator. ' . ($GLOBALS['debug'] ? "column=" . $key : '')];
                     }
-                    $num_keys_verified++;
                 }
             } else {
                 if ($GLOBALS['debug']) {
-                    return ['error' => 'Could not find config for table: ' . $this->table]
+                    return ['error' => 'Could not find config for table: ' . $this->table];
                 }
                 return ['error' => 'Error loading configuration, please notify site administrator.'];
             }
@@ -174,17 +181,17 @@
         function put($params) {
             
             $num_keys_verified = 0;
-            $table_config = (array) DatabaseConnection::$table_config->($this->table);
+            $table_config = (array) DatabaseConnection::$table_config->$this->table;
             if ($table_config) {
-                for ($table_config as $key => $value) {
-                    if (!$table_config->$key) {
-                        return ['error' => 'Could not valid contents ' . ($GLOBALS['debug'] ? "column=" . $key : '')]
+                foreach ($table_config as $key => $value) {
+                    if (!isset($params[$key])) {
+                        return ['error' => 'Could not validate params ' . ($GLOBALS['debug'] ? "column=" . $key : '')];
                     }
                     $num_keys_verified++;
                 }
             } else {
                 if ($GLOBALS['debug']) {
-                    return ['error' => 'Could not find config for table: ' . $this->table]
+                    return ['error' => 'Could not find config for table: ' . $this->table];
                 }
                 return ['error' => 'Error loading configuration, please notify site administrator.'];
             }

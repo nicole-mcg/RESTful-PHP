@@ -401,7 +401,7 @@
     }
 
     if (!$database_config->tables || !$database_config->connector || !$database_config->db_name || !$database_config->db_user || !$database_config->db_pass) {
-        if ($DEBUG) {
+        if ($GLOBALS['debug']) {
             echo 'rest-config.json must include keys "db_name", "db_user", "db_pass", "connector", and "tables". If all keys exist, there is probably an error parsing the file. Validate JSON here: https://jsonformatter.curiousconcept.com/';
         }
         return null;
