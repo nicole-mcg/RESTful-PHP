@@ -400,9 +400,18 @@
         $GLOBALS['debug'] = true;
     }
 
+    $GLOBALS['tables'] = [];
+
     DatabaseConnection::$table_config = $database_config->tables;
 
     $connectorName = $database_config->connector;
+    if (!file_exists('connectors/' . $connectorName . '.php')) {
+        if ($GLOBALS['debug']) {
+            echo "Cannot find connector '" . $connectorName . '". If it is empty, there was probably an error parsing rest-config.json';
+        }
+        return null;
+    }
+
     require('connectors/' . $connectorName . '.php');
 
     $connector = new $CONNECTORS[$connectorName]();
