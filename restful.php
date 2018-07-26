@@ -146,6 +146,21 @@
                 return ['error' => 'Could not find table'];
             }
 
+            $table_config = DatabaseConnection::$table_config->($this->table);
+            if ($table_config) {
+                for ($table_config as $key => $value) {
+                    if (!$table_config->$key) {
+                        return ['error' => 'Could not validate param ' . ($GLOBALS['debug'] ? "column=" . $key : '')]
+                    }
+                    $num_keys_verified++;
+                }
+            } else {
+                if ($GLOBALS['debug']) {
+                    return ['error' => 'Could not find config for table: ' . $this->table]
+                }
+                return ['error' => 'Error loading configuration, please notify site administrator.'];
+            }
+
             if (!$this->db->insert($this->table, $params)) {
                 return ['error' => 'Could not add item'];
             }
@@ -157,7 +172,27 @@
         }
 
         function put($params) {
-            // TODO needs verified columns, must have all
+            
+            $num_keys_verified = 0;
+            $table_config = (array) DatabaseConnection::$table_config->($this->table);
+            if ($table_config) {
+                for ($table_config as $key => $value) {
+                    if (!$table_config->$key) {
+                        return ['error' => 'Could not valid contents ' . ($GLOBALS['debug'] ? "column=" . $key : '')]
+                    }
+                    $num_keys_verified++;
+                }
+            } else {
+                if ($GLOBALS['debug']) {
+                    return ['error' => 'Could not find config for table: ' . $this->table]
+                }
+                return ['error' => 'Error loading configuration, please notify site administrator.'];
+            }
+
+            if (!len($params) === $num_keys_verified) {
+                return ['error' => "Incorrect number of params"];
+            }
+
             return ['message' => 'PUT method'];
         }
 
