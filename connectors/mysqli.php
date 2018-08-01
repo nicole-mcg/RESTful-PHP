@@ -14,6 +14,10 @@
             return $message;
         }
 
+        function escape_string($string) {
+            return $this->connection->real_escape_string($string);
+        }
+
         function query($sql) {
             $result = $this->connection->query($sql);
             return $result ? new MySQLiResult($result) : false;

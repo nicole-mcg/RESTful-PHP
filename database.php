@@ -11,6 +11,10 @@
 
         }
 
+        function escape_string($string) {
+
+        }
+
         function query($sql) {
 
         }
@@ -80,7 +84,7 @@
 
             $table_config = self::$table_config->$table_name;
 
-            $query = 'CREATE TABLE IF NOT EXISTS `' . $table_name . '` (';
+            $query = 'CREATE TABLE IF NOT EXISTS `' . $this->connector->escape_string($table_name) . '` (';
 
             $foreign_keys = [];
             $len = count((array) $table_config);
@@ -109,7 +113,7 @@
                 $default = array_key_exists('default', $value) ? $value['default'] : null;
                 $foreign_key = array_key_exists('foreign_key', $value) ? (array) $value['foreign_key'] : null;
 
-                $query .= '`' . $key . '` ' . $type . 
+                $query .= '`' . $this->connector->escape_string($key) . '` ' . $type . 
                     ($nullable ? '' : ' NOT NULL') . 
                     ($default === null ? '' : ' DEFAULT ' . var_export($default, true)) . 
                     ($auto_increment ? ' AUTO_INCREMENT' : '');
@@ -179,18 +183,20 @@
             }
 
             if (property_exists($table_config, 'primary_key')) {
-                $query .= ', CONSTRAINT ' . $table_config->primary_key . ' PRIMARY KEY (`' . $table_config->primary_key . '`)';
+                $query .= ', CONSTRAINT ' . $this->connector->escape_string($table_config->primary_key) . ' PRIMARY KEY (`' . $this->connector->escape_string($table_config->primary_key) . '`)';
             }
 
             foreach ($foreign_keys as $foreign_key) {
-                $query .= ', CONSTRAINT fk_' . $foreign_key['og_col'] . ' FOREIGN KEY(' . $foreign_key['og_col'] . ')' . ' REFERENCES ' . $foreign_key['table'] . '(' . $foreign_key['column'] . ')';
+                $query .= ', CONSTRAINT fk_' . $this->connector->escape_string($foreign_key['og_col']) . 
+                    ' FOREIGN KEY(' . $this->connector->escape_string($foreign_key['og_col']) . ')' .
+                    ' REFERENCES ' . $this->connector->escape_string($foreign_key['table']) . '(' . $this->connector->escape_string($foreign_key['column']) . ')';
 
                 if ($foreign_key['on_update']) {
-                    $query .= ' ON UPDATE ' . $foreign_key['on_update'];
+                    $query .= ' ON UPDATE ' . $this->connector->escape_string($foreign_key['on_update']);
                 }
 
                 if ($foreign_key['on_delete']) {
-                    $query .= ' ON DELETE ' . $foreign_key['on_delete'];
+                    $query .= ' ON DELETE ' . $this->connector->escape_string($foreign_key['on_delete']);
                 }
              }
 
@@ -214,7 +220,7 @@
                 if (!$first) {
                     $query .= ',';
                 }
-                $query .= "{$key}";
+                $query .= $this->connector->escape_string($key);
                 $first = false;
             }
 
@@ -225,7 +231,7 @@
                 if (!$first) {
                     $query .= ',';
                 }
-                $query .= "'" . $value . "'";
+                $query .= "'" . $this->connector->escape_string($value) . "'";
                 $first = false;
             }
             
@@ -272,30 +278,30 @@
                     if (!$first) {
                         $query .= ",";
                     }
-                    $query .= $value;
+                    $query .= $this->connector->escape_string($value);
                     $first = false;
                 }
             } else {
                 $query .= '* ';
             }
 
-            $query .= " FROM " . $table . " ";
+            $query .= " FROM " . $this->connector->escape_string($table) . " ";
 
             if ($where) {
-                $query .= "WHERE " . $where . " ";
+                $query .= "WHERE " . $this->connector->escape_string($where) . " ";
             }
 
             if ($group_by) {
-                $query .= "GROUP BY" . $group_by . " ";
+                $query .= "GROUP BY" . $this->connector->escape_string($group_by) . " ";
             }
 
             
             if ($order_by) {
-                $query .= "ORDER BY " . $order_by . " ";
+                $query .= "ORDER BY " . $this->connector->escape_string($order_by) . " ";
             }
 
             if ($limit) {
-                $query .= "LIMIT " . $limit;
+                $query .= "LIMIT " . $this->connector->escape_string($limit);
             }
 
             $result = $this->connector->query($query);
@@ -304,7 +310,7 @@
         }
 
         function update($table, $values, $where) {
-            $query = "UPDATE " . $table . ' SET ';
+            $query = "UPDATE " . $this->connector->escape_string($table) . ' SET ';
 
             if (!$where) {
                 if ($GLOBALS['debug']) {
@@ -319,12 +325,13 @@
                 if (!$first) {
                     $query .= ',';
                 }
-                $query .= $key . '=\'' . $value . '\' ';
+                $query .= $this->connector->escape_string($key) . '=\'' .
+                    $this->connector->escape_string($value) . '\' ';
                 $first = false;
             }
 
             if ($where) {
-                $query .= "WHERE " . $where . " ";
+                $query .= "WHERE " . $this->connector->escape_string($where) . " ";
             }
 
             $result = $this->connector->query($query);
@@ -333,7 +340,7 @@
         }
 
         function update_all($table, $values) {
-            $query = "UPDATE " . $table . ' SET ';
+            $query = "UPDATE " . $this->connector->escape_string($table) . ' SET ';
 
 
             $first = true;
@@ -341,7 +348,7 @@
                 if (!$first) {
                     $query .= ',';
                 }
-                $query .= $key . '=\'' . $value . '\' ';
+                $query .= $this->connector->escape_string($key) . '=\'' . $this->connector->escape_string($value) . '\' ';
                 $first = false;
             }
 
@@ -360,9 +367,9 @@
                 return null;
             }
 
-            $query = "DELETE FROM " . $table . ' ';
+            $query = "DELETE FROM " . $this->connector->escape_string($table) . ' ';
 
-            $query .= "WHERE " . $where . " ";
+            $query .= "WHERE " . $this->connector->escape_string($where) . " ";
 
             $result = $this->connector->query($query);
 
@@ -370,7 +377,7 @@
         }
 
         function delete_all($table) {
-            $result = $this->connector->query("DELETE FROM " . $table . ' ');
+            $result = $this->connector->query("DELETE FROM " . $this->connector->escape_string($table) . ' ');
 
             return $result;
         }
@@ -396,13 +403,15 @@
     $json_string = file_get_contents(__DIR__ . $config_path);
     $database_config = json_decode($json_string);
 
+
+        $GLOBALS['debug'] = true;
     if ($database_config->debug) {
         $GLOBALS['debug'] = true;
     }
 
     if (!$database_config->tables || !$database_config->connector || !$database_config->db_name || !$database_config->db_user || !$database_config->db_pass) {
         if ($GLOBALS['debug']) {
-            echo 'rest-config.json must include keys "db_name", "db_user", "db_pass", "connector", and "tables". If all keys exist, there is probably an error parsing the file. Validate JSON here: https://jsonformatter.curiousconcept.com/';
+            echo 'rest-config.json must include keys "db_name", "db_user", "db_pass", "connector", and "tables". If all keys exist, there is probably an error parsing the file. Validate JSON here: https://jsonformatter.curiousconcept.com/<br/>';
         }
         return null;
     }
@@ -410,9 +419,9 @@
     DatabaseConnection::$table_config = $database_config->tables;
 
     $connectorName = $database_config->connector;
-    if (!file_exists('connectors/' . $connectorName . '.php')) {
+    if (!file_exists(dirname(__FILE__) . '/connectors/' . $connectorName . '.php')) {
         if ($GLOBALS['debug']) {
-            echo "Cannot find connector '" . $connectorName . '". If it is empty, there was probably an error parsing rest-config.json';
+            echo "Cannot find connector '" . $connectorName . '". If it is empty, there was probably an error parsing rest-config.json<br/>';
         }
         return null;
     }
@@ -430,8 +439,7 @@
     $connection = new DatabaseConnection($connector);
 
     if ($result !== TRUE) {
-        //TODO error
-        echo $result;
+        return null;
     }
 
     return $connection;
