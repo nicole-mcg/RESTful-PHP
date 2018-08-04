@@ -190,7 +190,7 @@
 
             return [
                 'message' => 'Successfully added item',
-                'id' => $this->db->insert_id()
+                'id' => isset($params['id']) ? $params['id'] : $this->db->insert_id()
             ];
         }
 
