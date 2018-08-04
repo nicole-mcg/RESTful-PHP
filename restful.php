@@ -107,9 +107,11 @@
 
     class DatabaseEndpoint extends RESTfulEndpoint {
 
-        function __construct($tableName) {
+        function __construct($tableName, $locked_keys=[]) {
             parent::__construct();
             $this->table = $tableName;
+
+            $this->locked_keys = $locked_keys;
         }
 
         function verify_table() {
@@ -154,9 +156,23 @@
                 return ['error' => 'Could not find table'];
             }
 
-            $table_config = (array) DatabaseConnection::$table_config->$this->table;
+            $tableName = $this->table;
+
+            $table_config = (array) DatabaseConnection::$table_config->$tableName;
             if ($table_config) {
                 foreach ($table_config as $key => $value) {
+
+                    if ($key === 'primary_key') {
+                        continue;
+                    }
+
+                    if (in_array($key, $this->locked_keys)) {
+                        if (in_array($key, $params)) {
+                            unset($params[$key]);
+                        }
+                        continue;
+                    }
+
                     if (!isset($value->nullable) || (!$value->nullable && !isset($params[$key]))) {
                         return ['error' => 'Missing parameter. Please notify site administrator. ' . ($GLOBALS['debug'] ? "column=" . $key : '')];
                     }
@@ -184,6 +200,18 @@
             $table_config = (array) DatabaseConnection::$table_config->$this->table;
             if ($table_config) {
                 foreach ($table_config as $key => $value) {
+
+                    if ($key === 'primary_key') {
+                        continue;
+                    }
+
+                    if (in_array($key, $this->locked_keys)) {
+                        if (in_array($key, $params)) {
+                            unset($params[$key]);
+                        }
+                        continue;
+                    }
+
                     if (!isset($params[$key])) {
                         return ['error' => 'Could not validate params ' . ($GLOBALS['debug'] ? "column=" . $key : '')];
                     }
@@ -210,6 +238,12 @@
 
             if (!array_key_exists('id', $params)) {
                 return ['error' => 'You must enter an ID'];
+            }
+
+            foreach($params as $key => $val) {
+                if (in_array($key, $this->locked_keys)) {
+                    unset($params[$key]);
+                }
             }
 
             $result = $this->db->update('blog_posts', $params, 'id=' . $params['id']);
