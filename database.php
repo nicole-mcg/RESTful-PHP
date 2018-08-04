@@ -109,11 +109,13 @@
 
                 $type = $value['type'];
                 $nullable = array_key_exists('nullable', $value) ? $value['nullable'] : true;
+                $unique = array_key_exists('unique', $value) ? $value['unique'] : false;
                 $auto_increment = array_key_exists('auto_increment', $value) ? $value['auto_increment'] : false;
                 $default = array_key_exists('default', $value) ? $value['default'] : null;
                 $foreign_key = array_key_exists('foreign_key', $value) ? (array) $value['foreign_key'] : null;
 
                 $query .= '`' . $this->connector->escape_string($key) . '` ' . $type . 
+                    ($unique ? ' UNIQUE' : '') . 
                     ($nullable ? '' : ' NOT NULL') . 
                     ($default === null ? '' : ' DEFAULT ' . var_export($default, true)) . 
                     ($auto_increment ? ' AUTO_INCREMENT' : '');
