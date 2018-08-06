@@ -114,10 +114,16 @@
                 $default = array_key_exists('default', $value) ? $value['default'] : null;
                 $foreign_key = array_key_exists('foreign_key', $value) ? (array) $value['foreign_key'] : null;
 
+                if ($default !== null)  {
+                    if (!is_string($default)) {
+                        $default = var_export($default, true);
+                    }
+                }
+
                 $query .= '`' . $this->connector->escape_string($key) . '` ' . $type . 
                     ($unique ? ' UNIQUE' : '') . 
-                    ($nullable ? '' : ' NOT NULL') . 
-                    ($default === null ? '' : ' DEFAULT ' . var_export($default, true)) . 
+                    ($nullable ? ' NULL' : ' NOT NULL') . 
+                    ($default === null ? '' : ' DEFAULT ' . $default) . 
                     ($auto_increment ? ' AUTO_INCREMENT' : '');
 
                 if ($foreign_key !== null) {
@@ -189,7 +195,7 @@
             }
 
             foreach ($foreign_keys as $foreign_key) {
-                $query .= ', CONSTRAINT fk_' . $this->connector->escape_string($foreign_key['og_col']) . 
+                $query .= ', CONSTRAINT fk_' . $table_name . '_' . $this->connector->escape_string($foreign_key['og_col']) . 
                     ' FOREIGN KEY(' . $this->connector->escape_string($foreign_key['og_col']) . ')' .
                     ' REFERENCES ' . $this->connector->escape_string($foreign_key['table']) . '(' . $this->connector->escape_string($foreign_key['column']) . ')';
 
@@ -222,6 +228,8 @@
                 if (!$first) {
                     $query .= ',';
                 }
+
+
                 $query .= $this->connector->escape_string($key);
                 $first = false;
             }
@@ -233,7 +241,12 @@
                 if (!$first) {
                     $query .= ',';
                 }
-                $query .= "'" . $this->connector->escape_string($value) . "'";
+
+                if ($value === null) {
+                    $query .= 'NULL';
+                } else {
+                    $query .= "'" . $this->connector->escape_string($value) . "'";
+                }
                 $first = false;
             }
             
@@ -243,12 +256,7 @@
 
             if (!$result) {
                 $this->error = true;
-                $this->message = 'Could not insert into table ' . $table;
-
-                if ($GLOBALS['debug']) {
-                    echo $query, $this->connector->connection->error . '<br/>';
-                    echo var_dump($result);
-                }
+                $this->message = 'Could not insert into table ' . $table . ' <br/> Error: ' . $this->connector->connection->error . '\n<br\> Query: ' . $query;
 
                 return false;
             }
@@ -290,16 +298,16 @@
             $query .= " FROM " . $this->connector->escape_string($table) . " ";
 
             if ($where) {
-                $query .= "WHERE " . $this->connector->escape_string($where) . " ";
+                $query .= "WHERE " . $where . " ";
             }
 
             if ($group_by) {
-                $query .= "GROUP BY" . $this->connector->escape_string($group_by) . " ";
+                $query .= "GROUP BY" . $group_by . " ";
             }
 
             
             if ($order_by) {
-                $query .= "ORDER BY " . $this->connector->escape_string($order_by) . " ";
+                $query .= "ORDER BY " . $order_by . " ";
             }
 
             if ($limit) {
@@ -307,6 +315,13 @@
             }
 
             $result = $this->connector->query($query);
+
+            if (!$result) {
+                if ($GLOBALS['debug']) {
+                    $this->error = true;
+                    $this->message = 'Could not select item from table ' . $table . ' Error: ' . $this->connector->connection->error . ' Query: ' . $query;
+                }
+            }
 
             return $result;
         }
@@ -337,6 +352,13 @@
             }
 
             $result = $this->connector->query($query);
+
+            if (!$result) {
+                if ($GLOBALS['debug']) {
+                    echo $query, $this->connector->connection->error . '<br/>';
+                    echo var_dump($result);
+                }
+            }
 
             return $result;
         }
@@ -369,9 +391,9 @@
                 return null;
             }
 
-            $query = "DELETE FROM " . $this->connector->escape_string($table) . ' ';
+            $query = "DELETE FROM " . $table . ' ';
 
-            $query .= "WHERE " . $this->connector->escape_string($where) . " ";
+            $query .= "WHERE " . $where . " ";
 
             $result = $this->connector->query($query);
 
