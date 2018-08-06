@@ -9,18 +9,17 @@
 
     $GLOBALS['debug'] = false;
 
+    $GLOBALS['db'] = include('database.php');
+
+    if ($GLOBALS['db'] === null) {
+        echo "Could not connect to database";
+        die();
+    }
+
     class RESTfulEndpoint {
 
         function __construct() {
-            $this->db = include('database.php');
-
-            if ($this->db === null) {
-                if ($GLOBALS['debug']) {
-                    echo 'Could not create database connection.';
-                }
-                echo "Could not connect to database";
-                die();
-            }
+            $this->db = $GLOBALS['db'];   
         }
 
         function authenticate($method) {
@@ -30,39 +29,46 @@
         // Get items
         function _get() {
             if (method_exists($this, 'get')) {
-                return $this->get($_GET);
+                return $this->get($this->_escape_params($_GET));
             }
         }
 
         // New items
         function _post() {
             if (method_exists($this, 'post')) {
-                return $this->post($_POST);
+                return $this->post($this->_escape_params($_POST));
             }
         }
 
         // Replace items
         function _put() {
             if (method_exists($this, 'put')) {
-                parse_str(file_get_contents("php://input"),$params);
-                return $this->put($params);
+                parse_str(file_get_contents("php://input"), $params);
+                return $this->put($this->_escape_params($params));
             }
         }
 
         // Update items
         function _patch() {
             if (method_exists($this, 'patch')) {
-                parse_str(file_get_contents("php://input"),$params);
-                return $this->patch($params);
+                parse_str(file_get_contents("php://input"), $params);
+                return $this->patch($this->_escape_params($params));
             }
         }
 
         // Delete items
         function _delete() {
             if (method_exists($this, 'delete')) {
-                parse_str(file_get_contents("php://input"),$params);
-                return $this->delete($params);
+                parse_str(file_get_contents("php://input"), $params);
+                return $this->delete($this->_escape_params($params));
             }
+        }
+
+        function _escape_params($params) {
+            foreach ($params as $key => $val) {
+                $params[$key] = $this->db->connector->escape_string($val);
+            }
+            return $params;
         }
 
         function handleRequest() {
@@ -153,6 +159,9 @@
 
         function post($params) {
             if (!$this->verify_table()) {
+                if ($GLOBALS['debug']) {
+                    return ['error' => 'Could not verify table: ' . $this->db->message];
+                }
                 return ['error' => 'Could not find table'];
             }
 
@@ -173,8 +182,11 @@
                         continue;
                     }
 
-                    if (!isset($value->nullable) || (!$value->nullable && !isset($params[$key]))) {
-                        return ['error' => 'Missing parameter. Please notify site administrator. ' . ($GLOBALS['debug'] ? "column=" . $key : '')];
+                    if (isset($value->nullable) && !$value->nullable && !isset($value->default) && !isset($params[$key])) {
+                        if ($GLOBALS['debug']) {
+                            return ['error' => 'Missing key: ' . ($GLOBALS['debug'] ? "column=" . $key : '') . ' from table ' . $this->table];
+                        }
+                        return ['error' => 'Missing parameter. Please notify site administrator. '];
                     }
                 }
             } else {
@@ -185,6 +197,9 @@
             }
 
             if (!$this->db->insert($this->table, $params)) {
+                if ($GLOBALS['debug']) {
+                    return ['error' => 'Could not add item: ' . $this->db->message];
+                }
                 return ['error' => 'Could not add item'];
             }
 
@@ -246,7 +261,7 @@
                 }
             }
 
-            $result = $this->db->update('blog_posts', $params, 'id=' . $params['id']);
+            $result = $this->db->update($this->table, $params, 'id=' . $params['id']);
 
             if (!$result) {
                 return ['error' => 'Could not update item'];
@@ -262,13 +277,16 @@
 
             $id = $params['id'];
 
-            if (!$id) {
+            if (!isset($id)) {
                 return ['error' => 'You did not enter an ID to delete'];
             }
 
-            $result = $this->db->delete($this->table, 'id=' . $id);
+            $result = $this->db->delete($this->table, "id='" . $id . "'");
 
             if (!$result) {
+                if ($GLOBALS['debug']) {
+                    return ['error' => 'Could not delete item ' . $this->db->message];
+                }
                 return ['error' => 'Could not delete item'];
             }
 
