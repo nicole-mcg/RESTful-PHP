@@ -31,6 +31,21 @@
             return $this->connection->affected_rows;
         }
 
+        function get_result_code() {
+            $code = $this->connection->errno;
+
+            switch($code) {
+
+                case 0:
+                    return RESULT_SUCCESS;
+
+                case 1062:
+                    return RESULT_DUPLICATE_KEY;
+            }
+
+            return RESULT_UNKNOWN;
+        }
+
         function disconnect() {
             return $this->connection->close();
         }
