@@ -21,7 +21,8 @@ In order to make this easy to set up, it uses HTTP protocol for data (GET, POST)
     include('../restful.php');
 
     //First param is name of database
-    //Second param is an optional array of keys that cannot be set through the DatabaseEndpoint (they will be silently removed)
+    //Second param is an optional array of keys that cannot be set
+    //  through the DatabaseEndpoint (they will be silently removed)
     $endpoint = new DatabaseEndpoint('db_name', [
         'is_admin'
     ]);
@@ -68,7 +69,8 @@ In order to make this easy to set up, it uses HTTP protocol for data (GET, POST)
     }
 
     //First param is name of database
-    //Second param is an optional array of keys that cannot be set through the DatabaseEndpoint (they will be silently removed)
+    //Second param is an optional array of keys that cannot be set through
+    //  the DatabaseEndpoint (they will be silently removed)
     $endpoint = new DatabaseEndpoint('db_name', [
         'is_admin'
     ]);
