@@ -8,7 +8,7 @@
 
         // Should set $connection property
         function connect($address, $db_name, $username, $password) {
-
+            $this->connection = null;
         }
 
         function escape_string($string) {
@@ -28,6 +28,10 @@
         }
 
         function disconnect() {
+
+        }
+
+        function get_result_code() {
 
         }
 
@@ -256,7 +260,7 @@
 
             if (!$result) {
                 $this->error = true;
-                $this->message = 'Could not insert into table ' . $table . ' <br/> Error: ' . $this->connector->connection->error . '\n<br\> Query: ' . $query;
+                $this->message = 'Could not insert into table ' . $table . ' <br/> Error: ' . $this->connector->connection->errno . ' ' . $this->connector->connection->error . '\n<br\> Query: ' . $query;
 
                 return false;
             }
@@ -327,7 +331,7 @@
         }
 
         function update($table, $values, $where) {
-            $query = "UPDATE " . $this->connector->escape_string($table) . ' SET ';
+            $query = "UPDATE " . $table . ' SET ';
 
             if (!$where) {
                 if ($GLOBALS['debug']) {
@@ -342,13 +346,12 @@
                 if (!$first) {
                     $query .= ',';
                 }
-                $query .= $this->connector->escape_string($key) . '=\'' .
-                    $this->connector->escape_string($value) . '\' ';
+                $query .= $key . "=" . $value;
                 $first = false;
             }
 
             if ($where) {
-                $query .= "WHERE " . $this->connector->escape_string($where) . " ";
+                $query .= " WHERE " . $where . " ";
             }
 
             $result = $this->connector->query($query);
@@ -364,7 +367,7 @@
         }
 
         function update_all($table, $values) {
-            $query = "UPDATE " . $this->connector->escape_string($table) . ' SET ';
+            $query = "UPDATE " . $table . ' SET ';
 
 
             $first = true;
@@ -401,7 +404,7 @@
         }
 
         function delete_all($table) {
-            $result = $this->connector->query("DELETE FROM " . $this->connector->escape_string($table) . ' ');
+            $result = $this->connector->query("DELETE FROM " . $table . ' ');
 
             return $result;
         }
