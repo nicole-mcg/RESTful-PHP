@@ -1,4 +1,12 @@
-<?php 
+<?php
+
+    const RESULT_UNKNOWN = -1;
+    const RESULT_SUCCESS = 0;
+    const RESULT_NO_TABLE = 1;
+    const RESULT_MISSING_KEY = 2;
+    const RESULT_NO_CONFIG = 3;
+    const RESULT_DUPLICATE_KEY = 4;
+    const RESULT_ = 5;
 
     if (!isset($_COOKIE['rest_auth'])) {
         $GLOBALS['rest_id'] = hash('sha256', 'salt' . rand());
@@ -126,7 +134,10 @@
 
         function get($params) {
             if (!$this->verify_table()) {
-                return ['error' => 'Could not find database table'];
+                return [
+                    'error' => 'Could not find table',
+                    'return_code' => RESULT_NO_TABLE
+                ];
             }
 
             $where = null;
@@ -146,7 +157,9 @@
             ]);
 
             if (!$result) {
-                return ['error' => 'Could not find item'];
+                return [
+                    'error' => 'Could not find item'
+                ];
             }
 
             $response = [];
@@ -159,10 +172,10 @@
 
         function post($params) {
             if (!$this->verify_table()) {
-                if ($GLOBALS['debug']) {
-                    return ['error' => 'Could not verify table: ' . $this->db->message];
-                }
-                return ['error' => 'Could not find table'];
+                return [
+                    'error' => 'Could not find table',
+                    'return_code' => RESULT_NO_TABLE
+                ];
             }
 
             $tableName = $this->table;
@@ -183,37 +196,65 @@
                     }
 
                     if (isset($value->nullable) && !$value->nullable && !isset($value->default) && !isset($params[$key])) {
+                        $message = "";
                         if ($GLOBALS['debug']) {
-                            return ['error' => 'Missing key: ' . ($GLOBALS['debug'] ? "column=" . $key : '') . ' from table ' . $this->table];
+                            $message = 'Missing key: ' . ($GLOBALS['debug'] ? "column=" . $key : '') . ' from table ' . $this->table;
+                        } else {
+                            $message = 'Missing parameter';
                         }
-                        return ['error' => 'Missing parameter. Please notify site administrator. '];
+                        return [
+                            'error' => $message,
+                            'key' => $key,
+                            'return_code' => RESULT_MISSING_KEY
+                        ];
                     }
                 }
             } else {
+                $message = "";
                 if ($GLOBALS['debug']) {
-                    return ['error' => 'Could not find config for table: ' . $this->table];
-                }
-                return ['error' => 'Error loading configuration, please notify site administrator.'];
+                    $message = 'Could not find config for table: ' . $this->table;
+                } else {
+                    $message = 'Error loading configuration';
+                } 
+
+                return [
+                    'error' => $message,
+                    'return_code' => RESULT_NO_CONFIG
+                ];
             }
 
             if (!$this->db->insert($this->table, $params)) {
+                $message = "";
                 if ($GLOBALS['debug']) {
-                    return ['error' => 'Could not add item: ' . $this->db->message];
+                    $message = 'Could not add item: ' . $this->db->message;
+                } else {
+                    $message = 'Could not add item';
                 }
-                return ['error' => 'Could not add item'];
+                return [
+                    'error' => $message,
+                    'return_code' => $this->db->connector->get_result_code()
+                ];
             }
 
             return [
                 'message' => 'Successfully added item',
-                'id' => isset($params['id']) ? $params['id'] : $this->db->insert_id()
+                'id' => isset($params['id']) ? $params['id'] : $this->db->insert_id(),
+                'return_code' => RESULT_SUCCESS
             ];
         }
 
         function put($params) {
-            
+            if (!$this->verify_table()) {
+                return [
+                    'error' => 'Could not find table',
+                    'return_code' => RESULT_NO_TABLE
+                ];
+            }
+
             $num_keys_verified = 0;
             $table_config = (array) DatabaseConnection::$table_config->$this->table;
             if ($table_config) {
+
                 foreach ($table_config as $key => $value) {
 
                     if ($key === 'primary_key') {
@@ -228,31 +269,66 @@
                     }
 
                     if (!isset($params[$key])) {
-                        return ['error' => 'Could not validate params ' . ($GLOBALS['debug'] ? "column=" . $key : '')];
+                        return [
+                            'error' => 'No value for ' . ($GLOBALS['debug'] ? "column: " : "") . $key,
+                            'key' => $key,
+                            'return_code' => RESULT_MISSING_KEY
+                        ];
                     }
                     $num_keys_verified++;
                 }
+
             } else {
+
+                $return_val = ['return_code' => RESULT_NO_CONFIG];
+
                 if ($GLOBALS['debug']) {
-                    return ['error' => 'Could not find config for table: ' . $this->table];
+                    $return_val['error'] = 'Could not find config for table: ' . $this->table;
+                } else {
+                    $return_val['error'] = 'Error loading configuration';
                 }
-                return ['error' => 'Error loading configuration, please notify site administrator.'];
+
+                return $return_val;
+
             }
 
             if (!len($params) === $num_keys_verified) {
-                return ['error' => "Incorrect number of params"];
+                return [
+                    'error' => "Not all values were entered",
+                    'key' => 'UNKNOWN KEY',
+                    'return_code' => RESULT_MISSING_KEY
+                ];
             }
 
-            return ['message' => 'PUT method'];
+            $result = $this->db->update($this->table, $params, 'id=' . $params['id']);
+
+            if (!$result) {
+                return [
+                    'error' => 'Could not update item',
+                    'return_code' => $this->db->connector->get_result_code()
+                ];
+            }
+
+            return [
+                'message' => 'Successfully updated item',
+                'return_code' => RESULT_SUCCESS
+            ];
         }
 
         function patch($params) {
             if (!$this->verify_table()) {
-                return ['error' => 'Could not find table'];
+                return [
+                    'error' => 'Could not find table',
+                    'return_code' => RESULT_NO_TABLE
+                ];
             }
 
             if (!array_key_exists('id', $params)) {
-                return ['error' => 'You must enter an ID'];
+                return [
+                    'error' => 'No id specified',
+                    'key' => 'id',
+                    'return_code' => RESULT_MISSING_KEY 
+                ];
             }
 
             foreach($params as $key => $val) {
@@ -264,33 +340,55 @@
             $result = $this->db->update($this->table, $params, 'id=' . $params['id']);
 
             if (!$result) {
-                return ['error' => 'Could not update item'];
+                return [
+                    'error' => 'Could not update item',
+                    'return_code' => $this->db->connector->get_result_code()
+                ];
             }
 
-            return ['message' => 'Successfully updated item'];
+            return [
+                'message' => 'Successfully updated item',
+                'return_code' => RESULT_SUCCESS
+            ];
         }
 
         function delete($params) {
             if (!$this->verify_table()) {
-                return ['error' => 'Could not find table'];
+                return [
+                    'error' => 'Could not find table',
+                    'return_code' => RESULT_NO_TABLE
+                ];
             }
 
             $id = $params['id'];
 
             if (!isset($id)) {
-                return ['error' => 'You did not enter an ID to delete'];
+                return [
+                    'error' => 'No id specified',
+                    'key' => 'id',
+                    'return_code' => RESULT_MISSING_KEY 
+                ];
             }
 
             $result = $this->db->delete($this->table, "id='" . $id . "'");
 
             if (!$result) {
+                $message = "";
                 if ($GLOBALS['debug']) {
-                    return ['error' => 'Could not delete item ' . $this->db->message];
+                    $message = 'Could not delete item ' . $this->db->message;
+                } else {
+                   $message = 'Could not delete item';
                 }
-                return ['error' => 'Could not delete item'];
+                return [
+                    'error' => $message,
+                    'return_code' => $this->db->connector->get_result_code()
+                ];
             }
 
-            return ['message' => 'Successfully deleted item'];
+            return [
+                'message' => 'Successfully deleted item',
+                'return_code' => RESULT_SUCCESS
+            ];
         }
 
     }

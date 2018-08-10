@@ -315,7 +315,7 @@
             }
 
             if ($limit) {
-                $query .= "LIMIT " . $this->connector->escape_string($limit);
+                $query .= "LIMIT " . $limit;
             }
 
             $result = $this->connector->query($query);
