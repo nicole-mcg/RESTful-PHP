@@ -33,42 +33,57 @@
         function authenticate($method) {
             return true;
         }
+
+        function getJSONInput() {
+            $json = substr(file_get_contents("php://input"), 0);
+            $json = substr($json, 0, strlen($json));
+            $json = str_replace('\\', '', $json);
+            return json_decode($json, true);
+        }
         
         // Get items
         function _get() {
             if (method_exists($this, 'get')) {
-                return $this->get($this->_escape_params($_GET));
+                $params = $_GET;
+                if (count($params) === 0) {
+                    $params = $this->getJSONInput();
+                }
+                return $this->get($params);
             }
         }
 
         // New items
         function _post() {
             if (method_exists($this, 'post')) {
-                return $this->post($this->_escape_params($_POST));
+                $params = $_POST;
+                if (count($params) === 0) {
+                    $params = $this->getJSONInput();
+                }
+                return $this->post($params);
             }
         }
 
         // Replace items
         function _put() {
             if (method_exists($this, 'put')) {
-                parse_str(file_get_contents("php://input"), $params);
-                return $this->put($this->_escape_params($params));
+                $params = $this->getJSONInput();
+                return $this->put($params);
             }
         }
 
         // Update items
         function _patch() {
             if (method_exists($this, 'patch')) {
-                parse_str(file_get_contents("php://input"), $params);
-                return $this->patch($this->_escape_params($params));
+                $params = $this->getJSONInput();
+                return $this->patch($params);
             }
         }
 
         // Delete items
         function _delete() {
             if (method_exists($this, 'delete')) {
-                parse_str(file_get_contents("php://input"), $params);
-                return $this->delete($this->_escape_params($params));
+                $params = $this->getJSONInput();
+                return $this->delete($params);
             }
         }
 
