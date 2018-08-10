@@ -1,4 +1,4 @@
-In-depth tutorial: http://ossoftware.ca/blog-post?id=1
+# Setup: http://ossoftware.ca/blog-post?id=1
 
 This is a PHP framework for a RESTful API. It provides an easy framework to add endpoints that handle any request type. It also handles database connection, creation and queries. 
 
