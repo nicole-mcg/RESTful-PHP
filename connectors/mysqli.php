@@ -1,5 +1,8 @@
 <?php
 
+    #Author: Connor McGrogan
+    #Website: https://github.com/c-mcg/RESTful-PHP
+
     class MySQLiConnector extends DatabaseConnector {
 
         function connect($address, $db_name, $username, $password) {
