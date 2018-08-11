@@ -3,69 +3,29 @@
     #Author: Connor McGrogan
     #Website: https://github.com/c-mcg/RESTful-PHP
 
-    $CONNECTORS = [
-        'mysqli' => 'MySQLiConnector'
-    ];
+    class DatabaseQuery {
 
-    class DatabaseConnector {
+        function __construct($conn, $query, $first_query=null, $prev_query=null) {
+            $this->conn = $conn;
+            $this->query = $query;
 
-        // Should set $connection property
-        function connect($address, $db_name, $username, $password) {
-            $this->connection = null;
+            $this->first_query = $first_query;
+            $this->next_query = null;
+
+            if ($prev_query) {
+                $prev_query->next_query = this;
+            }
         }
 
-        function escape_string($string) {
+        function run() {
+            $query_str = "";
 
-        }
+            $curr_query = $this->first_query;
+            do {
+                $query_str .= $curr_query->query . ($curr_query->next_query ? ',' : '');
+            } while ($query = $curr_query->next_query);
 
-        function query($sql) {
-
-        }
-
-        function insert_id() {
-            
-        }
-
-        function num_rows() {
-            
-        }
-
-        function disconnect() {
-
-        }
-
-        function get_result_code() {
-
-        }
-
-    }
-
-    class DatabaseResult {
-
-        // Sets the current row index
-        function set_current_row($index) {
-        }
-
-        // Returns an array of the next row
-        // Result keys will be indexed if $enumerated is true, otherwise the keys will be field names
-        function get_next_row($enumerated=false) {
-        }
-
-        // Returns an array of all rows
-        // Result keys will be indexed if $enumerated is true, otherwise the keys will be field names
-        function get_all_rows($enumerated=false) {
-        }
-
-        // Returns a class instance with values from the row set as properties
-        // keys in $properties will also be added as properties 
-        function get_row_as_class($class_name, $properties=null) {
-        }
-
-        // Returns an array of field info
-        function get_field_info() {
-        }
-
-        function free() {
+            return $this->db->connector->multi_query($query_str);
         }
 
     }
@@ -434,53 +394,5 @@
 
     }
 
-    $GLOBALS['debug'] = false;
-
-    $config_path = isset($GLOBALS['config_path']) ? $GLOBALS['config_path'] : '/../../../../rest-config.json';
-
-    //TODO make sure file exists
-    $json_string = file_get_contents(__DIR__ . $config_path);
-    $database_config = json_decode($json_string);
-
-
-        $GLOBALS['debug'] = true;
-    if ($database_config->debug) {
-        $GLOBALS['debug'] = true;
-    }
-
-    if (!$database_config->tables || !$database_config->connector || !$database_config->db_name || !$database_config->db_user || !$database_config->db_pass) {
-        if ($GLOBALS['debug']) {
-            echo 'rest-config.json must include keys "db_name", "db_user", "db_pass", "connector", and "tables". If all keys exist, there is probably an error parsing the file. Validate JSON here: https://jsonformatter.curiousconcept.com/<br/>';
-        }
-        return null;
-    }
-
-    DatabaseConnection::$table_config = $database_config->tables;
-
-    $connectorName = $database_config->connector;
-    if (!file_exists(dirname(__FILE__) . '/connectors/' . $connectorName . '.php')) {
-        if ($GLOBALS['debug']) {
-            echo "Cannot find connector '" . $connectorName . '". If it is empty, there was probably an error parsing rest-config.json<br/>';
-        }
-        return null;
-    }
-
-    require('connectors/' . $connectorName . '.php');
-
-    $connector = new $CONNECTORS[$connectorName]();
-
-    $db_name = $database_config->db_name;
-    $db_user = $database_config->db_user;
-    $db_pass = $database_config->db_pass;
-
-    $result = $connector->connect('127.0.0.1', $db_name, $db_user, $db_pass);
-
-    $connection = new DatabaseConnection($connector);
-
-    if ($result !== TRUE) {
-        return null;
-    }
-
-    return $connection;
 
 ?>

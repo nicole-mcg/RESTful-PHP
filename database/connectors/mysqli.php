@@ -21,6 +21,14 @@
             return $this->connection->real_escape_string($string);
         }
 
+        function get_next_result() {
+            return $this->connection->next_result();
+        }
+
+        function multi_query($query) {
+            return $this->connection->multi_query;
+        }
+
         function query($sql) {
             $result = $this->connection->query($sql);
             return $result ? new MySQLiResult($result) : false;

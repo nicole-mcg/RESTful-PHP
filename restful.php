@@ -20,7 +20,7 @@
 
     $GLOBALS['debug'] = false;
 
-    $GLOBALS['db'] = include('database.php');
+    $GLOBALS['db'] = include('database/database.php');
 
     if ($GLOBALS['db'] === null) {
         echo "Could not connect to database";
