@@ -142,13 +142,13 @@
 
                 if ($foreign_key !== null) {
 
-                    if (!$foreign_key['table']) {
+                    if (!isset($foreign_key['table'])) {
                         $this->message = "No 'table' key in foreign_key: " . $key;
                         $this->error = true;
                         return false;
                     }
 
-                    if (!$foreign_key['column']) {
+                    if (!isset($foreign_key['column'])) {
                         $this->message = "No 'column' key in foreign_key: " . $key;
                         $this->error = true;
                         return false;
@@ -162,7 +162,7 @@
                         'set null'
                     ];
 
-                    if ($foreign_key['on_delete']) {
+                    if (isset($foreign_key['on_delete'])) {
                         $found = false;
                         foreach ($VALID_ACTIONS as $value) {
                             if (strtolower($foreign_key['on_delete']) === $value) {
@@ -178,7 +178,7 @@
                         }
                     }
 
-                    if ($foreign_key['on_update']) {
+                    if (isset($foreign_key['on_update'])) {
                         $found = false;
                         foreach ($VALID_ACTIONS as $value) {
                             if (strtolower($foreign_key['on_update']) === $value) {
@@ -213,11 +213,11 @@
                     ' FOREIGN KEY(' . $this->connector->escape_string($foreign_key['og_col']) . ')' .
                     ' REFERENCES ' . $this->connector->escape_string($foreign_key['table']) . '(' . $this->connector->escape_string($foreign_key['column']) . ')';
 
-                if ($foreign_key['on_update']) {
+                if (isset($foreign_key['on_update'])) {
                     $query .= ' ON UPDATE ' . $this->connector->escape_string($foreign_key['on_update']);
                 }
 
-                if ($foreign_key['on_delete']) {
+                if (isset($foreign_key['on_delete'])) {
                     $query .= ' ON DELETE ' . $this->connector->escape_string($foreign_key['on_delete']);
                 }
              }
@@ -288,11 +288,12 @@
 
         // Params: columns (string[]), where (string), group_by (string), order_by (string), limit (number)
         function select($table, $params) {
-            $columns = $params['columns'];
-            $where = $params['where'];
-            $group_by = $params['group_by'];
-            $order_by = $params['order_by'];
-            $limit = $params['limit'];
+            $columns = isset($params['columns']) ? $params['columns'] : null;
+            $where = isset($params['where']) ? $params['where'] : null;
+            $group_by = isset($params['group_by']) ? $params['group_by'] : null;
+            $order_by = isset($params['order_by']) ? $params['order_by'] : null;
+            $join = isset($params['join'])
+            $limit = isset($params['limit']) ? $params['limit'] : null;
 
             $query = "SELECT ";
 
@@ -434,7 +435,7 @@
 
     $GLOBALS['debug'] = false;
 
-    $config_path = $CONFIG_PATH ? $CONFIG_PATH : '/../../../../rest-config.json';
+    $config_path = isset($GLOBALS['config_path']) ? $GLOBALS['config_path'] : '/../../../../rest-config.json';
 
     //TODO make sure file exists
     $json_string = file_get_contents(__DIR__ . $config_path);
