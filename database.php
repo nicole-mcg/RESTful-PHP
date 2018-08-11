@@ -91,7 +91,7 @@
 
             $table_config = self::$table_config->$table_name;
 
-            $query = 'CREATE TABLE IF NOT EXISTS `' . $this->connector->escape_string($table_name) . '` (';
+            $query = "CREATE TABLE IF NOT EXISTS `" . $this->connector->escape_string($table_name) . "` (";
 
             $primary_key = "";
             foreach ($table_config as $key => $value) {
@@ -149,7 +149,7 @@
                     }
 
                     if (!isset($foreign_key['column'])) {
-                        $this->message = "No 'column' key in foreign_key: " . $key;
+                        $this->message = "A foreign key must have either a `column` key. local_col=" . $key;
                         $this->error = true;
                         return false;
                     }
@@ -209,6 +209,7 @@
             }
 
             foreach ($foreign_keys as $foreign_key) {
+
                 $query .= ', CONSTRAINT fk_' . $table_name . '_' . $this->connector->escape_string($foreign_key['og_col']) . 
                     ' FOREIGN KEY(' . $this->connector->escape_string($foreign_key['og_col']) . ')' .
                     ' REFERENCES ' . $this->connector->escape_string($foreign_key['table']) . '(' . $this->connector->escape_string($foreign_key['column']) . ')';
