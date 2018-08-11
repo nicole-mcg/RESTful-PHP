@@ -1,5 +1,10 @@
 
-This is a PHP framework for a RESTful API. It provides an easy framework to add endpoints that handle any request type. It also handles database connection, creation and queries. 
+This is a PHP framework for a RESTful API.
+
+It makes it easy to add endpoints by providing the `RESTfulEndpoint` and `DatabaseEndpoint` classes.
+It also provides an interface for SQL database access. 
+
+SQL queries are made to work on all database types, meaning as long as you only use standard SQL types, you should be able to switch just by changing the `connector` attribute. To use a database, a connector for the database must exist. For a list of possible connectors see http://php.net/manual/en/refs.database.php. There is currently only a connector for MySQL.
 
 Accepts requests as form data or JSON strings. Results are JSON strings.
 
@@ -56,7 +61,10 @@ See: http://ossoftware.ca/blog-post?id=1
             $result = parent::post($params);
             
             if (isset($result['error'])) {
-                return ['Custom error message'];
+                if ($result['return_code'] === RESULT_DUPLICATE) {
+                    return ['error' => 'Tried to add duplicate item']
+                }
+                return ['error' => 'Error adding item'];
             }
             
             return ['message' => 'Custom success response'];
