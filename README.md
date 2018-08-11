@@ -1,17 +1,13 @@
-# Setup
-
-See: http://ossoftware.ca/blog-post?id=1
 
 This is a PHP framework for a RESTful API. It provides an easy framework to add endpoints that handle any request type. It also handles database connection, creation and queries. 
 
 Accepts requests as form data or JSON strings. Results are JSON strings.
 
-# Endpoint Usage
+# Setup
 
-- configure `rest-config.json` (Don't put this in a public folder!)
-- Include `restful.php`
-- Extend `RESTfulEndpoint` or `DatabaseEndpoint`
-- Handle the request
+See: http://ossoftware.ca/blog-post?id=1
+
+# Endpoint Usage
 
 ### Database Endpoint
 - Contains automatic handlers for all method types
