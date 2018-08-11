@@ -54,8 +54,8 @@
         }
 
         // Returns a class instance with values from the row set as properties
-        // keys in $params will also be added as properties 
-        function get_row_as_class($className, $params=null) {
+        // keys in $properties will also be added as properties 
+        function get_row_as_class($class_name, $properties=null) {
         }
 
         // Returns an array of field info
@@ -89,6 +89,13 @@
             $table_config = self::$table_config->$table_name;
 
             $query = 'CREATE TABLE IF NOT EXISTS `' . $this->connector->escape_string($table_name) . '` (';
+
+            $primary_key = "";
+            foreach ($table_config as $key => $value) {
+                if ($key === 'primary_key') {
+                    $primary_key = $value;
+                }
+            }
 
             $foreign_keys = [];
             $len = count((array) $table_config);
@@ -126,7 +133,7 @@
 
                 $query .= '`' . $this->connector->escape_string($key) . '` ' . $type . 
                     ($unique ? ' UNIQUE' : '') . 
-                    ($nullable ? ' NULL' : ' NOT NULL') . 
+                    ($nullable ? ($primary_key === $key ? '' : ' NULL') : ' NOT NULL') . 
                     ($default === null ? '' : ' DEFAULT ' . $default) . 
                     ($auto_increment ? ' AUTO_INCREMENT' : '');
 
@@ -194,7 +201,7 @@
                 $index++;
             }
 
-            if (property_exists($table_config, 'primary_key')) {
+            if ($primary_key !== "") {
                 $query .= ', CONSTRAINT ' . $this->connector->escape_string($table_config->primary_key) . ' PRIMARY KEY (`' . $this->connector->escape_string($table_config->primary_key) . '`)';
             }
 
