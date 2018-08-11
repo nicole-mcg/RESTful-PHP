@@ -1,28 +1,89 @@
-# RESTful-PHP
 
-In-depth tutorial: http://ossoftware.ca/blog-post?id=1
+This is a PHP framework for a RESTful API.
 
-This is a PHP framework for a RESTful API. It provides an easy framework to add endpoints that handle any request type. It also handles database connection, creation and queries. 
+It makes it easy to add endpoints by providing the `RESTfulEndpoint` and `DatabaseEndpoint` classes.
+It also provides an interface for SQL database access. 
 
-In order to make this easy to set up, it uses HTTP protocol for data (GET, POST) and does not handle routing. Example request: `http://localhost/api/endpoint.php?id=5`. Responses are in JSON.
+SQL queries are made to work on all database types, meaning as long as you only use standard SQL types, you should be able to switch just by changing the `connector` attribute. To use a database, a connector for the database must exist. For a list of possible connectors see http://php.net/manual/en/refs.database.php. There is currently only a connector for MySQL.
 
-## Usage
+Accepts requests as form data or JSON strings. Results are JSON strings.
 
-- configure `rest-config.json` (Don't put this in a public folder!)
-- Include `restful.php`
-- Extend `RESTfulEndpoint` or `DatabaseEndpoint`
-- Handle the request
+# Setup
+
+See: http://ossoftware.ca/blog-post?id=1
+
+# Endpoint Usage
+
+### Database Endpoint
+- Contains automatic handlers for all method types
 ```
 <?php
 
     include('../restful.php');
 
-    $endpoint = new DatabaseEndpoint('db_name');
+    //First param is name of database
+    //Second param is an optional array of keys that cannot be set
+    //  through the DatabaseEndpoint (they will be silently removed)
+    $endpoint = new DatabaseEndpoint('db_name', [
+        'is_admin'
+    ]);
     $endpoint->handleRequest();
 
 ?>
 ```
 
+```
+<?php
+
+    include('../restful.php');
+    
+    class Endpoint extends DatabaseEndpoint {
+        
+        function authenticate($method) {
+            
+            if ($method === 'GET') {
+                return true;
+            }
+            
+            return is_user_admin();
+        }
+        
+        function get($params) {
+        
+            if (!isset($params['id'])) {
+                return ['error' => 'Custom error message'];
+            }
+            
+            return parent::get($params);
+        }
+        
+        function post($params) {
+            $result = parent::post($params);
+            
+            if (isset($result['error'])) {
+                if ($result['return_code'] === RESULT_DUPLICATE) {
+                    return ['error' => 'Tried to add duplicate item']
+                }
+                return ['error' => 'Error adding item'];
+            }
+            
+            return ['message' => 'Custom success response'];
+        }
+        
+    }
+
+    //First param is name of database
+    //Second param is an optional array of keys that cannot be set through
+    //  the DatabaseEndpoint (they will be silently removed)
+    $endpoint = new DatabaseEndpoint('db_name', [
+        'is_admin'
+    ]);
+    $endpoint->handleRequest();
+
+?>
+```
+
+### Custom endpoint
 ```
 <?php
 
@@ -51,8 +112,9 @@ In order to make this easy to set up, it uses HTTP protocol for data (GET, POST)
 ?>
 ```
 
-## Database Usage
+# Database Usage
 
+### `DatabaseConnection` (`$this->db`)
 Access database from within endpoints via `$this->db`. Methods in `DatabaseConnection`:
 
 - `verify_table(string $tableName)` - This will create the table with the specified name based on `rest-config.json`, if it doesn't already exist. It will also create the database if it doesn't exist. Use this for any tables used, at the start of your endpoint handlers.
@@ -70,7 +132,13 @@ Access database from within endpoints via `$this->db`. Methods in `DatabaseConne
 
 - `updateAll(string $tableName, array $values)` - Deletes all rows in the table. This functionality is prevented in `delete`, so it is provided here.
 
-
-
 - `disconnect($isError=false, $message='')` - Closes the server connection.
-`
+
+- `insert_id()` - Returns the auto-generated ID from the last query. Returns 0 if none exists.
+- `num_rows()` - Returns the number of rows affected by the last query
+
+### `DatabaseResult`
+- `get_next_row(bool $enumerated=false)` - Gets the next row from a select query. Keys are indexes instead of column names if `$enumerated` is true
+- `get_all_rows(bool $enumerated=false)` - Gets all rows from a select query. Keys are indexes instead of column names if `$enumerated` is true
+- `get_row_as_class(string $class_name, array $properties=null)` - Creates an instance of the class specified with the properties from the next row. Properties in `$properties` will also be added.
+- `set_current_row` - Sets the current row index
