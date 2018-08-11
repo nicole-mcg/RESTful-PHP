@@ -1,5 +1,8 @@
 <?php
 
+    #Author: Connor McGrogan
+    #Website: https://github.com/c-mcg/RESTful-PHP
+
     const RESULT_UNKNOWN = -1;
     const RESULT_SUCCESS = 0;
     const RESULT_NO_TABLE = 1;
@@ -27,7 +30,7 @@
     class RESTfulEndpoint {
 
         function __construct() {
-            $this->db = $GLOBALS['db'];   
+            $this->db = $GLOBALS['db'];
         }
 
         function authenticate($method) {
@@ -147,7 +150,7 @@
             return $this->db->verify_table($this->table);
         }
 
-        function get($params) {
+        function get($params, $where=null) {
             if (!$this->verify_table()) {
                 return [
                     'error' => 'Could not find table',
@@ -155,9 +158,11 @@
                 ];
             }
 
-            $where = null;
             if (array_key_exists('id', $params)) {
-                $where = 'id=' . $params['id'];
+                if (!$where) {
+                    $where = "";
+                }
+                $where .= 'AND id=' . $params['id'];
             }
 
             $limit = 50;
@@ -258,7 +263,7 @@
             ];
         }
 
-        function put($params) {
+        function put($params, $where=null) {
             if (!$this->verify_table()) {
                 return [
                     'error' => 'Could not find table',
@@ -315,7 +320,8 @@
                 ];
             }
 
-            $result = $this->db->update($this->table, $params, 'id=' . $params['id']);
+            $where = (!$where ? "" : $where . ' AND ') . "id='" . $params['id'] . "'"; 
+            $result = $this->db->update($this->table, $params, $where);
 
             if (!$result) {
                 return [
@@ -330,7 +336,7 @@
             ];
         }
 
-        function patch($params) {
+        function patch($params, $where=null) {
             if (!$this->verify_table()) {
                 return [
                     'error' => 'Could not find table',
@@ -352,7 +358,9 @@
                 }
             }
 
-            $result = $this->db->update($this->table, $params, 'id=' . $params['id']);
+            $where = (!$where ? "" : $where . ' AND ') . "id='" . $params['id'] . "'"; 
+
+            $result = $this->db->update($this->table, $params, $where);
 
             if (!$result) {
                 return [
@@ -367,7 +375,7 @@
             ];
         }
 
-        function delete($params) {
+        function delete($params, $where=null) {
             if (!$this->verify_table()) {
                 return [
                     'error' => 'Could not find table',
@@ -385,7 +393,8 @@
                 ];
             }
 
-            $result = $this->db->delete($this->table, "id='" . $id . "'");
+            $where = (!$where ? "" : $where . ' AND ') . "id='" . $id . "'"; 
+            $result = $this->db->delete($this->table, $where);
 
             if (!$result) {
                 $message = "";

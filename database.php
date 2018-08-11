@@ -292,7 +292,7 @@
             $where = isset($params['where']) ? $params['where'] : null;
             $group_by = isset($params['group_by']) ? $params['group_by'] : null;
             $order_by = isset($params['order_by']) ? $params['order_by'] : null;
-            $join = isset($params['join'])
+            $join = isset($params['join']);
             $limit = isset($params['limit']) ? $params['limit'] : null;
 
             $query = "SELECT ";
