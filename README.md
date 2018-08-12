@@ -117,7 +117,7 @@ See: http://ossoftware.ca/blog-post?id=1
 ### `DatabaseConnection` (`$this->db`)
 Access database from within endpoints via `$this->db`. Methods in `DatabaseConnection`:
 
-- `verify_table(string $tableName)` - This will create the table with the specified name based on `rest-config.json`, if it doesn't already exist. It will also create the database if it doesn't exist. Use this for any tables used, at the start of your endpoint handlers.
+- `verify_table(string $tableName)` - This will create the table with the specified name based on `rest-config.json`, if it doesn't already exist. It will also create the database if it doesn't exist.
 
 - `insert(string $tableName, array $values)` - Inserts the array into the specified table. The array's keys should match the column names of the table being inserted into
 
