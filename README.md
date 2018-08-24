@@ -24,7 +24,7 @@ See: http://ossoftware.ca/blog-post?id=1
     //First param is name of database
     //Second param is an optional array of keys that cannot be set
     //  through the DatabaseEndpoint (they will be silently removed)
-    $endpoint = new DatabaseEndpoint('db_name', [
+    $endpoint = new DatabaseEndpoint('table_name', [
         'is_admin'
     ]);
     $endpoint->handleRequest();
