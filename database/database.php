@@ -1,7 +1,7 @@
 <?php
 
     #Author: Nik M
-    #Website: https://github.com/c-mcg/RESTful-PHP
+    #Website: https://github.com/nik-m2/RESTful-PHP
 
     include('connector.php');
     include('connection.php');
