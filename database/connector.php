@@ -1,6 +1,6 @@
 <?php
 
-    #Author: Connor McGrogan
+    #Author: Nik M
     #Website: https://github.com/c-mcg/RESTful-PHP
 
     class DatabaseConnector {
